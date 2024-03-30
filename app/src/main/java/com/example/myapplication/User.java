@@ -77,8 +77,8 @@ class User implements Serializable {
         }
 
         double maintenanceCalories = bmr * activityLevelMultiplier;
-        double loseCalories = (weight - goal_weight) *(1100*days/7);
-        double gainCalories = (goal_weight-weight)*(1100*days/7);
+        double loseCalories = ((weight - goal_weight) * 150)/ days;
+        double gainCalories = ((goal_weight-weight)*150) / days;
 
         if(gml == 1){
             return   daily_calories = (int) (maintenanceCalories - loseCalories);

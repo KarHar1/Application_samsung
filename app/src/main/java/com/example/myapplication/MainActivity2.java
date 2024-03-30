@@ -45,7 +45,7 @@ public class MainActivity2 extends AppCompatActivity {
                         break;
                     case "Weight Maintenance":
                         gml = (2);
-                        goal_weight.setText(""); // Clear the text
+                        goal_weight.setText(String.valueOf(userWeight)); // Clear the text
                         goal_weight.setEnabled(false);
                         break;
                     case "Weight Gain":

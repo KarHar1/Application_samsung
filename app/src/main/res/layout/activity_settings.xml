@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="#F2FAE9"
+    >
+
+    <!-- User Information -->
+
+    <EditText
+        android:id="@+id/gWeight"
+        android:layout_width="304dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="11dp"
+        android:layout_marginTop="495dp"
+        android:background="@drawable/edittext_1"
+        android:enabled="false"
+        android:hint="Goal_weight"
+        android:textSize="24dp"
+
+        app:fontFamily="@font/quicksand" />
+
+    <EditText
+        android:id="@+id/text_age"
+        android:layout_width="304dp"
+        android:layout_height="wrap_content"
+        android:hint="Age: 25"
+        android:layout_below="@id/text_name"
+        android:layout_marginStart="11dp"
+        android:background="@drawable/edittext_1"
+        android:textSize="24dp"
+        app:fontFamily="@font/quicksand"
+        android:enabled="false"
+
+
+
+        />
+
+    <EditText
+        android:id="@+id/text_weight"
+        android:layout_width="304dp"
+        android:layout_height="wrap_content"
+        android:hint="Weight: 70 kg"
+        android:layout_below="@id/text_age"
+        android:layout_marginStart="11dp"
+        android:background="@drawable/edittext_1"
+        android:textSize="24dp"
+        app:fontFamily="@font/quicksand"
+        android:enabled="false"
+
+
+
+        />
+
+    <EditText
+        android:id="@+id/text_height"
+        android:layout_width="304dp"
+        android:layout_height="wrap_content"
+        android:hint="Height: 180 cm"
+        android:layout_below="@id/text_weight"
+        android:layout_marginStart="11dp"
+        android:background="@drawable/edittext_1"
+        android:textSize="24dp"
+        app:fontFamily="@font/quicksand"
+        android:enabled="false"
+
+
+
+        />
+
+    <!-- Radio Group for Goal -->
+    <RadioGroup
+        android:id="@+id/radio_group_goal"
+        android:layout_marginStart="11dp"
+        android:layout_marginTop="300dp"
+        android:layout_width="304dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:orientation="vertical"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:enabled="false"
+        >
+
+        <RadioButton
+            android:id="@+id/radio_gain_weight"
+            android:layout_width="match_parent"
+            app:fontFamily="@font/quicksand"
+            android:textSize="24dp"
+            android:layout_height="wrap_content"
+            android:background="@drawable/edittext_1"
+            android:hint="Gain Weight"
+            />
+
+        <RadioButton
+            android:id="@+id/radio_lose_weight"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="24dp"
+            android:background="@drawable/edittext_1"
+            android:hint="Lose Weight"
+            app:fontFamily="@font/quicksand" />
+
+        <RadioButton
+            android:id="@+id/radio_maintain_weight"
+            android:layout_width="match_parent"
+            app:fontFamily="@font/quicksand"
+            android:layout_height="wrap_content"
+            android:textSize="24dp"
+            android:background="@drawable/edittext_1"
+            android:hint="Maintain Weight"
+            />
+    </RadioGroup>
+
+
+    <EditText
+        android:id="@+id/text_name"
+        android:layout_width="304dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="11dp"
+        android:layout_marginTop="22dp"
+        android:background="@drawable/edittext_1"
+        android:enabled="false"
+        android:hint="Name: John Doe"
+        android:textSize="24dp"
+
+        app:fontFamily="@font/quicksand" />
+
+    <Button
+        android:id="@+id/button_logout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginTop="85dp"
+        android:layout_marginEnd="0dp"
+        android:layout_marginBottom="0dp"
+        android:text="Logout" />
+
+    <Button
+        android:id="@+id/editbutton"
+        android:layout_width="75dp"
+        android:layout_height="75dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="0dp"
+        android:layout_marginEnd="11dp"
+        android:text="Edit" />
+
+
+</RelativeLayout>
