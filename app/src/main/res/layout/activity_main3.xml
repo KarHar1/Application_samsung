@@ -45,7 +45,7 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="350dp"
+        android:layout_marginTop="440dp"
         android:orientation="vertical"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -92,44 +92,28 @@
     </RadioGroup>
 
 
-
     <Button
         android:id="@+id/next2"
         android:layout_width="125dp"
         android:layout_height="75dp"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginStart="248dp"
-        android:layout_marginBottom="28dp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
         android:background="@drawable/next_button"
         android:text="Next"
         android:textSize="24sp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent" />
 
-    <EditText
+    <CalendarView
         android:id="@+id/editTextDate"
         android:layout_width="304dp"
-        android:layout_height="wrap_content"
+        android:layout_height="300dp"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="208dp"
+        android:layout_marginTop="120dp"
         android:background="@drawable/edittext_1"
-        android:hint="Enter date (dd/MM/yyyy)"
-        android:inputType="date"
-        android:textSize="24dp"
-        app:fontFamily="@font/quicksand"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/ResultText"
-        android:layout_width="304dp"
-        android:layout_height="52dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="144dp"
-        app:fontFamily="@font/quicksand"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        android:maxDate="cu" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

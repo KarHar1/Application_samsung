@@ -4,26 +4,21 @@ import java.io.Serializable;
 
 class User implements Serializable {
     private static final long serialVersionUID = 1L;
-
-    int gml;
-    double tde, bmi;
-    int age, weight, height, daily_calories, exer, goal_weight, days;
-    Boolean gender;
+    int days;
+    int age, weight, height, daily_calories, exer, gml ,goal_weight;
+    boolean gender;
     String name;
 
-    public User() {
-    }
+    public User( int age , int heihgt , int weight , int gml , int goal_weight , int exer ,int days   , boolean gender) {
+        this.age = age;
+        this.height = heihgt;
+        this.weight = weight;
+        this.gml= gml;
+        this.daily_calories = goal_weight;
+        this.exer = exer;
+        this.days =days;
+        this.gender = gender;
 
-    public void setTde(double tde) {
-        this.tde = tde;
-    }
-
-    public void setBmi(double bmi) {
-        this.bmi = bmi;
-    }
-
-    public void setGml(int gml) {
-        this.gml = gml;
     }
 
     public void setName(String name) {
@@ -38,7 +33,7 @@ class User implements Serializable {
         this.weight = weight;
     }
 
-    public void setGender(Boolean gender) {
+    public void setGender(boolean gender) {
         this.gender = gender;
     }
 
@@ -54,54 +49,47 @@ class User implements Serializable {
         this.goal_weight = goal_weight;
     }
 
-    void countBMT(int age, int weight, int height, boolean gender, int goal_weight) {
-        double bmt;
+    public double calculateCalories() {
+        double bmr;
         if (gender) {
-            bmt = (10 * weight) + (6.25 * height) - (5 * age) + 5;
+            bmr = 66.47 + (13.75 * weight) + (5.003 * height) - (6.755 * age);
         } else {
-            bmt = (10 * weight) + (6.25 * height) - (5 * age) - 161;
+            bmr = 655.1 + (9.563 * weight) + (1.850 * height) - (4.676 * age);
         }
-        setBmi(bmi);
-    }
 
-    void countTDE(int exer, double btm) {
-        double tde = 0;
+        double activityLevelMultiplier;
         switch (exer) {
             case 1:
-                tde = btm * 1.2;
+                activityLevelMultiplier = 1.2;
                 break;
             case 2:
-                tde = btm * 1.375;
+                activityLevelMultiplier = 1.375;
                 break;
             case 3:
-                tde = btm * 1.55;
+                activityLevelMultiplier = 1.55;
                 break;
             case 4:
-                tde = btm * 1.725;
+                activityLevelMultiplier = 1.725;
                 break;
+
+            default:
+                throw new IllegalArgumentException("Invalid activity level choice.");
         }
-        setTde(tde);
-    }
 
-    String coutOverallDailyCalories() {
-        double cal = 0;
-        switch (this.gml) {
-            case 1:
-                cal = (this.tde * 0.75);
-                break;
-            case 2:
-                cal = (this.tde);
-                break;
-            case 3:
-                cal = (this.tde * 0.75 + 500) + ((Math.random()) * 10) + 500;
-                break;
+        double maintenanceCalories = bmr * activityLevelMultiplier;
+        double loseCalories = (weight - goal_weight) *(1100*days/7);
+        double gainCalories = (goal_weight-weight)*(1100*days/7);
+
+        if(gml == 1){
+            return   daily_calories = (int) (maintenanceCalories - loseCalories);
+        }else if(gml == 2){
+             return daily_calories = (int) maintenanceCalories;
+        }else {
+              return daily_calories = (int) (maintenanceCalories + gainCalories); // Aim for a 1000 calorie deficit per day for extreme fat loss
+
         }
-        cal /= this.days;
 
-        return String.valueOf(cal);
-    }
 
-    double bmi(int w, int h) {
-        return w / (h * h);
+
     }
 }

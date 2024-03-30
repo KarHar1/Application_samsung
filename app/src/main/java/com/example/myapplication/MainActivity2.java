@@ -1,8 +1,12 @@
 package com.example.myapplication;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -11,10 +15,7 @@ import android.widget.RadioButton;
 import android.widget.Toast;
 
 public class MainActivity2 extends AppCompatActivity {
-    public static final String PREFS_NAME = "MyPrefsFile";
-    public static final String FIRST_TIME_KEY = "first_time";
-
-
+    int gml = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,50 +24,71 @@ public class MainActivity2 extends AppCompatActivity {
 
         EditText goal_weight = findViewById(R.id.edittext_5);
 
-        Intent intent = getIntent();
-        User user1 = (User) intent.getSerializableExtra("user_data");
-
         RadioGroup radios = findViewById(R.id.radioGoals);
 
-        radios.setOnCheckedChangeListener((radiogroup, id)-> {
-            RadioButton radio = findViewById(id);
 
-            switch (radio.getText().toString()) {
-                case "WeightLoss":
-                    user1.gml = 1;
-                    break;
-                case "WeightMaintenance":
-                    user1.gml = 2;
-                    break;
-                case "WeightGain":
-                    user1.gml = 3;
-                    break;
-                default: break;
+        SharedPreferences sp = getApplicationContext().getSharedPreferences("UserInfo", Context.MODE_PRIVATE);
+        int userWeight = sp.getInt("weight", 0);
+
+
+       SharedPreferences.Editor  editor= sp.edit();
+
+        radios.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup radioGroup, int i) {
+                RadioButton radio = findViewById(i);
+
+                switch (radio.getText().toString()) {
+                    case "Weight Loss":
+                        gml = (1);
+                        goal_weight.setEnabled(true);
+                        break;
+                    case "Weight Maintenance":
+                        gml = (2);
+                        goal_weight.setText(""); // Clear the text
+                        goal_weight.setEnabled(false);
+                        break;
+                    case "Weight Gain":
+                        gml = (3);
+                        goal_weight.setEnabled(true);
+                        break;
+                    default:
+                        break;
+                }
             }
         });
+
+
 
         Button next1 = findViewById(R.id.next2);
         next1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                try {
-                    String goalText = goal_weight.getText().toString();
-                    if (!goalText.isEmpty()) {
-                        int goal = Integer.parseInt(goalText);
-                        user1.setGoal_weight(user1.weight-goal);
-                        if (user1.bmi(user1.weight , user1.height)>18.5 && user1.bmi(user1.weight , user1.height)<26.5 ){
-                            throw new RuntimeException("Ur Bmi is too high or too low , pick another weight goal");
-                        }
-                        Intent intent2 = new Intent(MainActivity2.this, MainActivity3.class);
-                        intent2.putExtra("user_data1", user1);
-                        startActivity(intent2);
-                    } else {
-                        Toast.makeText(MainActivity2.this, "Please enter a goal weight", Toast.LENGTH_SHORT).show();
+                if(!(gml== 2 && TextUtils.isEmpty(goal_weight.getText()))){
+                    if(gml==1 && Integer.parseInt(goal_weight.getText().toString())>userWeight) {
+                        Toast.makeText(MainActivity2.this , "Weight should be smaller than goalweight" , Toast.LENGTH_LONG).show();
+                    }else if(gml==3 && Integer.parseInt(goal_weight.getText().toString())<userWeight){
+                        Toast.makeText(MainActivity2.this , "Weight should be bigger than goalweight" , Toast.LENGTH_LONG).show();
+                    }else {
+                        editor.putInt("goalWeight", Integer.parseInt(goal_weight.getText().toString()));
+                        editor.putInt("gml", gml);
+                        editor.commit();
+                        startActivity(new Intent(MainActivity2.this, MainActivity3.class));
+                        finish();
                     }
-                } catch (NumberFormatException e) {
-                    Toast.makeText(MainActivity2.this, "Invalid numeric input", Toast.LENGTH_SHORT).show();
+                }else if(TextUtils.isEmpty(goal_weight.getText())){
+                    Toast.makeText(MainActivity2.this , "Fill all Fiealds" , Toast.LENGTH_LONG).show();
+                }else{
+                    editor.putInt("goalWeight" , Integer.parseInt(goal_weight.getText().toString()));
+                    editor.putInt("gml" , gml);
+                    editor.commit();
+                    startActivity(new Intent(MainActivity2.this, MainActivity3.class));
+                    finish();
                 }
             }
         });
     }
+
+
 }
+

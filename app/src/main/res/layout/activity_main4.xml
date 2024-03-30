@@ -7,200 +7,139 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity4">
 
-    <androidx.core.widget.NestedScrollView
-        android:id="@+id/nestedScrollView"
+    <RelativeLayout
+        android:id="@+id/vector"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_height="139.79dp"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:background="@drawable/vector"
+        android:gravity="top"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent" >
 
-        <RelativeLayout
+        <TextView
+            android:id="@+id/xxxx2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginLeft="14dp"
+            android:layout_marginTop="76dp"
+            android:background="#FF5722"
+            android:text="Eaten"
+            android:textColor="#FFFFFF"
+            android:textSize="24sp"
+            app:fontFamily="@font/quicksand_bold" />
+
+        <TextView
+            android:id="@+id/xxxx"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginLeft="160dp"
+            android:layout_marginTop="38dp"
+            android:background="#FFFFFF"
+            android:text="Calories"
+            android:textSize="24sp"
+            app:fontFamily="@font/quicksand_bold" />
+
+        <TextView
+            android:id="@+id/xxxx1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="78dp"
+            android:layout_marginEnd="11dp"
+            android:background="#FF5722"
+            android:text="Burned"
+            android:textColor="#FFFFFF"
+            android:textSize="24sp"
+            app:fontFamily="@font/quicksand_bold" />
+    </RelativeLayout>
+
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:elevation="-10dp"
+        android:fillViewport="true"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:layout_editor_absoluteX="-16dp">
+
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            tools:context=".YourActivity">
+            android:layout_marginTop="139dp"
+            android:gravity="center"
+            android:orientation="vertical">
 
-            <!-- View for the vector -->
-            <View
-                android:id="@+id/vector"
-                android:layout_width="410.32dp"
-                android:layout_height="139.79dp"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentTop="true"
-                android:layout_marginLeft="0dp"
-                android:layout_marginTop="-17dp"
-                android:background="@drawable/vector" />
-
-            <!-- TextView for "Calories" -->
+            <!-- TextViews for content -->
             <TextView
-                android:id="@+id/xxxx"
-                android:layout_width="wrap_content"
-                android:layout_height="40dp"
-                android:layout_alignParentLeft="true"
-                android:layout_marginLeft="160dp"
-                android:layout_alignParentTop="true"
-                android:layout_marginTop="35dp"
-                android:text="Calories"
+                android:id="@+id/rectangle_2"
+                android:layout_width="340dp"
+                android:layout_height="165dp"
+                android:layout_marginTop="20dp"
+                android:background="@drawable/edittext_1"
+                android:contentDescription="Description for Breakfast"
+                android:text="Breakfast"
                 android:textSize="24sp"
-                app:fontFamily="@font/quicksand_bold"
-                android:background="#FFFFFF" />
+                app:fontFamily="@font/quicksand" />
 
-
-            <!-- TextView for "Burned" -->
             <TextView
-                android:id="@+id/xxxx1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:layout_marginLeft="280dp"
-                android:layout_alignParentTop="true"
-                android:layout_marginTop="47dp"
+                android:id="@+id/rectangle_3"
+                android:layout_width="340dp"
+                android:layout_height="165dp"
+                android:layout_marginTop="20dp"
+                android:background="@drawable/edittext_1"
+                android:contentDescription="Description for Lunch"
+                android:text="Lunch"
                 android:textSize="24sp"
-                android:text="Burned"
-                app:fontFamily="@font/quicksand_bold"
-                android:background="#FF5722"
-                android:gravity="center"
-                android:textColor="#FFFFFF" />
+                app:fontFamily="@font/quicksand" />
 
-            <!-- TextView for "Eaten" -->
             <TextView
-                android:id="@+id/xxxx2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:layout_marginLeft="36dp"
-                android:layout_alignParentTop="true"
-                android:layout_marginTop="47dp"
+                android:id="@+id/rectangle_4"
+                android:layout_width="340dp"
+                android:layout_height="165dp"
+                android:layout_marginTop="20dp"
+                android:background="@drawable/edittext_1"
+                android:contentDescription="Description for Dinner"
+                android:text="Dinner"
                 android:textSize="24sp"
-                android:text="Eaten"
-                app:fontFamily="@font/quicksand_bold"
-                android:background="#FF5722"
-                android:gravity="center"
-                android:textColor="#FFFFFF" />
+                app:fontFamily="@font/quicksand" />
 
-            <!-- Other views... -->
+            <TextView
+                android:id="@+id/rectangle_5"
+                android:layout_width="340dp"
+                android:layout_height="165dp"
+                android:layout_marginTop="20dp"
+                android:background="@drawable/edittext_1"
+                android:contentDescription="Description for Snacks"
+                android:text="Snacks"
+                android:textSize="24sp"
+                app:fontFamily="@font/quicksand" />
 
-            <!-- ScrollView for the content -->
-            <ScrollView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:elevation="-10dp"
-                android:fillViewport="true">
-
-                <!-- LinearLayout for content -->
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="139dp"
-                    android:orientation="vertical">
-
-                    <!-- TextViews for content -->
-                    <TextView
-                        android:id="@+id/rectangle_2"
-                        android:layout_width="340dp"
-                        android:layout_height="165dp"
-                        android:layout_marginLeft="16dp"
-                        android:layout_marginTop="0dp"
-                        android:background="@drawable/edittext_1"
-                        android:contentDescription="Description for Breakfast"
-                        android:text="Breakfast"
-                        android:textSize="24sp"
-                        app:fontFamily="@font/quicksand" />
-
-                    <TextView
-                        android:id="@+id/rectangle_3"
-                        android:layout_width="340dp"
-                        android:layout_height="165dp"
-                        android:layout_alignParentTop="true"
-                        android:layout_centerHorizontal="true"
-                        android:layout_marginLeft="16dp"
-                        android:layout_marginTop="20dp"
-                        android:background="@drawable/edittext_1"
-                        android:contentDescription="Description for Lunch"
-                        android:text="Lunch"
-                        android:textSize="24sp"
-                        app:fontFamily="@font/quicksand" />
-
-                    <TextView
-                        android:id="@+id/rectangle_4"
-                        android:layout_width="340dp"
-                        android:layout_height="165dp"
-                        android:layout_marginLeft="16dp"
-                        android:layout_marginTop="20dp"
-                        android:background="@drawable/edittext_1"
-                        android:contentDescription="Description for Dinner"
-                        android:text="Dinner"
-                        android:textSize="24sp"
-                        app:fontFamily="@font/quicksand" />
-
-                    <TextView
-                        android:id="@+id/rectangle_5"
-                        android:layout_width="340dp"
-                        android:layout_height="165dp"
-                        android:layout_marginLeft="16dp"
-                        android:layout_marginTop="20dp"
-                        android:background="@drawable/edittext_1"
-                        android:contentDescription="Description for Snacks"
-                        android:text="Snacks"
-                        android:textSize="24sp"
-                        app:fontFamily="@font/quicksand" />
-
-                    <TextView
-                        android:id="@+id/rectangle_6"
-                        android:layout_width="340dp"
-                        android:layout_height="165dp"
-                        android:layout_alignParentTop="true"
-                        android:layout_centerHorizontal="true"
-                        android:layout_marginLeft="16dp"
-                        android:layout_marginTop="20dp"
-                        android:background="@drawable/edittext_1"
-                        android:contentDescription="Description for Exercise"
-                        android:text="Exercise"
-                        android:textSize="24sp"
-                        app:fontFamily="@font/quicksand" />
-
-                    <!-- ImageView for an example -->
-                    <ImageView
-                        android:id="@+id/imageView"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        app:srcCompat="?attr/actionBarItemBackground" />
-                </LinearLayout>
-            </ScrollView>
-        </RelativeLayout>
-    </androidx.core.widget.NestedScrollView>
-    <Button
-        android:id="@+id/bottomButton"
-        android:layout_width="150dp"
-        android:layout_height="wrap_content"
-        android:text="Bottom-Left"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        android:layout_marginStart="16dp"
-        android:layout_marginBottom="16dp"/>
-
-    <Button
-        android:id="@+id/bottomButton1"
-        android:layout_width="150dp"
-        android:layout_height="wrap_content"
-        android:text="Center"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        android:layout_marginLeft="0dp"
-        android:layout_marginBottom="16dp"/>
-
-    <Button
-        android:id="@+id/bottomButton2"
-        android:layout_width="150dp"
-        android:layout_height="wrap_content"
-        android:text="Bottom-Right"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="16dp"/>
+            <TextView
+                android:id="@+id/rectangle_6"
+                android:layout_width="340dp"
+                android:layout_height="165dp"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="20dp"
+                android:background="@drawable/edittext_1"
+                android:contentDescription="Description for Exercise"
+                android:text="Exercise"
+                android:textSize="24sp"
+                app:fontFamily="@font/quicksand" />
 
 
+        </LinearLayout>
+    </ScrollView>
 </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+
 

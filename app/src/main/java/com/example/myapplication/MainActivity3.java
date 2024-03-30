@@ -1,100 +1,112 @@
 package com.example.myapplication;
 
+import static com.example.myapplication.MainActivity.User_Key;
+
 import androidx.appcompat.app.AppCompatActivity;
+
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
+import android.widget.CalendarView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
+import java.util.concurrent.TimeUnit;
 
 public class MainActivity3 extends AppCompatActivity {
 
     Intent intent;
-    User user1;
-    EditText timePeriod;
-    TextView resultTextView;
-
+    SharedPreferences sp;
+    int days , exer ;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-
         setContentView(R.layout.activity_main3);
 
-        // Initialize views within the onCreate method
-        timePeriod = findViewById(R.id.editTextDate);
-        resultTextView = findViewById(R.id.ResultText);
+        CalendarView timePeriod = findViewById(R.id.editTextDate);
+        Button next = findViewById(R.id.next2);
+        RadioGroup exersizeLVL = findViewById(R.id.radioExer);
 
-        intent = getIntent();
-        user1 = (User) intent.getSerializableExtra("user_data1");
+        sp = getApplicationContext().getSharedPreferences("UserInfo", Context.MODE_PRIVATE);
+        SharedPreferences.Editor ed = sp.edit();
 
-        RadioGroup radios = findViewById(R.id.radioExer);
 
-        radios.setOnCheckedChangeListener((radiogroup, id)-> {
-            RadioButton radio = findViewById(id);
 
-            switch (radio.getText().toString()) {
-                case "sedentary":
-                    user1.exer = 1;
-                    break;
-                case "light":
-                    user1.exer = 2;
-                    break;
-                case "medium":
-                    user1.exer = 3;
-                    break;
-                case "active":
-                    user1.exer = 4;
-                    break;
-                default:
-                    break;
+
+        exersizeLVL.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                RadioButton bttn = findViewById(checkedId);
+                switch(bttn.getText().toString()){
+                    case "Sedentary active":
+                        exer = 1 ;
+                        break;
+                    case "Lightly Active":
+                        exer = 2 ;
+                        break;
+                    case "Moderatly Active":
+                        exer = 3 ;
+                        break;
+
+                    case "Very active":
+                        exer = 4 ;
+                        break;
+
+
+                }
+
             }
         });
 
-        Button next = findViewById(R.id.next2);
+
+
+        long millisecondsInTwoMonths = 60L * 24 * 60 * 60 * 1000;
+        long millisecondsInOneWeek = 7L * 24 * 60 * 60 * 1000;
+        timePeriod.setMaxDate(System.currentTimeMillis() + millisecondsInTwoMonths);
+        timePeriod.setMinDate(System.currentTimeMillis() + millisecondsInOneWeek );
+
         next.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (resultTextView.toString().isEmpty() || radios.getCheckedRadioButtonId()==-1 ) {
-                    Toast.makeText(MainActivity3.this, "Please fill in all fields", Toast.LENGTH_SHORT).show();
-                    return;
+
+                if(timePeriod.getDate()!= 0 ) {
+                    days = (int) calDayDiff(timePeriod);
+                    ed.putInt("days",days);
+                    ed.putInt("exer" , exer);
+                    ed.commit();
+                    Intent intent2 = new Intent(MainActivity3.this, MainActivity4.class);
+                    startActivity(intent2);
+
+                }else{
+                    Toast.makeText(MainActivity3.this , "Fill all Fiealds" , Toast.LENGTH_LONG).show();
                 }
-                // Call the method to calculate date difference
-                calculateDateDifference();
-                Intent intent3 = new Intent(MainActivity3.this, MainActivity4.class);
-                intent3.putExtra("user_data2", user1);
-                startActivity(intent3);
             }
         });
     }
 
-    private void calculateDateDifference() {
-        String dateString = timePeriod.getText().toString();
-        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+    long calDayDiff(CalendarView timePeriod) {
+        long selectedDateMillis = timePeriod.getDate();
+        long currentDateMillis = System.currentTimeMillis();
 
-        long differenceInDays = 0;
-        try {
-            Date inputDate = dateFormat.parse(dateString);
-            Date currentDate = new Date();
+        long diff = selectedDateMillis - currentDateMillis;
 
-            long differenceInMillis = currentDate.getTime() - inputDate.getTime();
-            differenceInDays = differenceInMillis / (24 * 60 * 60 * 1000);
-            user1.days = (int) differenceInDays;
+        return TimeUnit.MILLISECONDS.toDays(diff);
+    }
 
-            // Display the calculated date difference
-            resultTextView.setText(String.valueOf(user1.days));
 
-        } catch (ParseException e) {
-            resultTextView.setText("Invalid date format");
+    public void onBackPressed() {
+        if(false) {
+            super.onBackPressed();
+        }else{
+
         }
     }
+
 }
