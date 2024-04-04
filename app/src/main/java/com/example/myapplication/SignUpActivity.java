@@ -24,7 +24,7 @@ public class SignUpActivity extends AppCompatActivity {
 
     // Declare any other necessary variables.
     private FirebaseAuth auth;
-    private EditText signupEmail, signupPassword;
+    private EditText signupEmail, signupPassword , singnUpPasswordRepp;
     private Button signupButton;
     private TextView loginRedirectText;
 
@@ -40,18 +40,20 @@ public class SignUpActivity extends AppCompatActivity {
         signupPassword = findViewById(R.id.signup_password);
         signupButton = findViewById(R.id.signup_button);
         loginRedirectText = findViewById(R.id.loginRedirectText);
+        singnUpPasswordRepp = findViewById(R.id.signup_password_rep);
 
         signupButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 String user = signupEmail.getText().toString().trim();
                 String pass = signupPassword.getText().toString().trim();
+                String repPass = singnUpPasswordRepp.getText().toString().trim();
 
                 if (user.isEmpty()){
                     signupEmail.setError("Email cannot be empty");
                 }
-                if(pass.isEmpty()){
-                    signupPassword.setError("Password cannot be empty");
+                if(pass.isEmpty() || !(repPass.equals(pass)) ){
+                    signupPassword.setError("Check the imputed passwords ");
                 } else{
                     auth.createUserWithEmailAndPassword(user, pass).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                         @Override

@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:gravity="center"
-    tools:context=".SignUp">
+    tools:context=".SignUpActivity">
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
@@ -54,6 +54,17 @@
                 android:layout_marginTop="20dp"
                 android:padding="8dp"
                 android:hint="Password"
+                android:drawablePadding="8dp"
+                android:textColor="@color/black"
+                />
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:id="@+id/signup_password_rep"
+                android:layout_marginRight="40dp"
+                android:layout_marginTop="20dp"
+                android:padding="8dp"
+                android:hint="Repeat the password"
                 android:drawablePadding="8dp"
                 android:textColor="@color/black"
                 />

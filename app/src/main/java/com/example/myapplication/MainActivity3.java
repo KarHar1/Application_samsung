@@ -1,6 +1,5 @@
 package com.example.myapplication;
 
-import static com.example.myapplication.MainActivity.User_Key;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -97,16 +96,10 @@ public class MainActivity3 extends AppCompatActivity {
 
         long diff = selectedDateMillis - currentDateMillis;
 
-        return TimeUnit.MILLISECONDS.toDays(diff);
+        return TimeUnit.MILLISECONDS.toDays(diff)/7;
     }
 
 
-    public void onBackPressed() {
-        if(false) {
-            super.onBackPressed();
-        }else{
 
-        }
-    }
 
 }

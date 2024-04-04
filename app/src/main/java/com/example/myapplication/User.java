@@ -6,10 +6,10 @@ class User implements Serializable {
     private static final long serialVersionUID = 1L;
     int days;
     int age, weight, height, daily_calories, exer, gml ,goal_weight;
-    boolean gender;
+    String gender;
     String name;
 
-    public User( int age , int heihgt , int weight , int gml , int goal_weight , int exer ,int days   , boolean gender) {
+    public User( int age , int heihgt , int weight , int gml , int goal_weight , int exer ,int days   , String gender) {
         this.age = age;
         this.height = heihgt;
         this.weight = weight;
@@ -33,7 +33,7 @@ class User implements Serializable {
         this.weight = weight;
     }
 
-    public void setGender(boolean gender) {
+    public void setGender(String gender) {
         this.gender = gender;
     }
 
@@ -51,7 +51,7 @@ class User implements Serializable {
 
     public double calculateCalories() {
         double bmr;
-        if (gender) {
+        if (gender.equals("male")) {
             bmr = 66.47 + (13.75 * weight) + (5.003 * height) - (6.755 * age);
         } else {
             bmr = 655.1 + (9.563 * weight) + (1.850 * height) - (4.676 * age);
@@ -77,8 +77,8 @@ class User implements Serializable {
         }
 
         double maintenanceCalories = bmr * activityLevelMultiplier;
-        double loseCalories = ((weight - goal_weight) * 150)/ days;
-        double gainCalories = ((goal_weight-weight)*150) / days;
+        double loseCalories = ((weight - goal_weight) * 1100)/ days;
+        double gainCalories = ((goal_weight-weight)*1100) / days;
 
         if(gml == 1){
             return   daily_calories = (int) (maintenanceCalories - loseCalories);

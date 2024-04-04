@@ -15,7 +15,6 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
-
     <RelativeLayout
         android:id="@+id/vector"
         android:layout_width="match_parent"
@@ -25,8 +24,7 @@
         android:background="@drawable/vector"
         android:gravity="top"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" >
-
+        app:layout_constraintTop_toTopOf="parent">
 
         <TextView
             android:id="@+id/xxxx2"
@@ -70,87 +68,28 @@
             app:fontFamily="@font/quicksand_bold" />
     </RelativeLayout>
 
-
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:elevation="-10dp"
         android:fillViewport="true"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:layout_editor_absoluteX="-16dp">
+        app:layout_constraintTop_toBottomOf="@+id/vector"
+        tools:layout_editor_absoluteX="-38dp">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="139dp"
             android:gravity="center"
             android:orientation="vertical">
 
-            <!-- TextViews for content -->
-            <FrameLayout
-                android:id="@+id/rectangle_2"
-                android:layout_width="340dp"
-                android:layout_height="165dp"
-                android:layout_marginTop="20dp"
+            <EditText
+                android:id="@+id/searchBar"
+                android:layout_width="316dp"
+                android:layout_height="50dp"
                 android:background="@drawable/edittext_1"
-                android:contentDescription="Description for Breakfast"
-                android:text="Breakfast"
-                android:textSize="24sp"
+                android:hint="Name"
+                android:textSize="24dp"
                 app:fontFamily="@font/quicksand" />
-
-            <FrameLayout
-                android:id="@+id/rectangle_3"
-                android:layout_width="340dp"
-                android:layout_height="165dp"
-                android:layout_marginTop="20dp"
-                android:background="@drawable/edittext_1"
-                android:contentDescription="Description for Lunch"
-                android:text="Lunch"
-                android:textSize="24sp"
-                app:fontFamily="@font/quicksand" />
-
-            <FrameLayout
-                android:id="@+id/rectangle_4"
-                android:layout_width="340dp"
-                android:layout_height="165dp"
-                android:layout_marginTop="20dp"
-                android:background="@drawable/edittext_1"
-                android:contentDescription="Description for Dinner"
-                android:text="Dinner"
-                android:textSize="24sp"
-                app:fontFamily="@font/quicksand" />
-
-            <FrameLayout
-                android:id="@+id/rectangle_5"
-                android:layout_width="340dp"
-                android:layout_height="165dp"
-                android:layout_marginTop="20dp"
-                android:background="@drawable/edittext_1"
-                android:contentDescription="Description for Snacks"
-                android:text="Snacks"
-                android:textSize="24sp"
-                app:fontFamily="@font/quicksand" />
-
-            <FrameLayout
-                android:id="@+id/rectangle_6"
-                android:layout_width="340dp"
-                android:layout_height="165dp"
-                android:layout_alignParentTop="true"
-                android:layout_centerHorizontal="true"
-                android:layout_marginLeft="16dp"
-                android:layout_marginTop="20dp"
-                android:background="@drawable/edittext_1"
-                android:contentDescription="Description for Exercise"
-                android:text="Exercise"
-                android:textSize="24sp"
-                app:fontFamily="@font/quicksand" />
-
 
         </LinearLayout>
-
     </ScrollView>
 </androidx.constraintlayout.widget.ConstraintLayout>
-
-
-
-
