@@ -9,12 +9,12 @@ class User implements Serializable {
     String gender;
     String name;
 
-    public User( int age , int heihgt , int weight , int gml , int goal_weight , int exer ,int days   , String gender) {
+    public User( int age , int heihgt , int weight , int gml , int goal_weight , int exer ,int days   , String gender ) {
         this.age = age;
         this.height = heihgt;
         this.weight = weight;
         this.gml= gml;
-        this.daily_calories = goal_weight;
+        this.goal_weight = goal_weight;
         this.exer = exer;
         this.days =days;
         this.gender = gender;

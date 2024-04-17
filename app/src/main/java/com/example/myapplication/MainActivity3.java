@@ -96,7 +96,7 @@ public class MainActivity3 extends AppCompatActivity {
 
         long diff = selectedDateMillis - currentDateMillis;
 
-        return TimeUnit.MILLISECONDS.toDays(diff)/7;
+       return diff / (1000 * 60 * 60 * 24);
     }
 
 

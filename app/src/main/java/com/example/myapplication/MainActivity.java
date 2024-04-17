@@ -14,7 +14,13 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.util.Map;
+
 public class MainActivity extends AppCompatActivity {
+    FirebaseFirestore db = FirebaseFirestore.getInstance();
+
 
     public static final String PREFS_NAME = "MyPrefsFile";
     public static final String FIRST_TIME_KEY = "first_time";
@@ -65,11 +71,16 @@ public class MainActivity extends AppCompatActivity {
                     }
                     clearError(weightEditText);
 
-                    if (height < 0 || height > 300) {
+                    if (height < 0 || height > 3) {
                         setError("Enter a proper height", heightEditText);
                         return;
                     }
                     clearError(heightEditText);
+
+
+
+
+
 
                     SharedPreferences.Editor editor = userPref.edit();
                     editor.putString("name", name);

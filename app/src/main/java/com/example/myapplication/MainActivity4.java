@@ -40,8 +40,8 @@ public class MainActivity4 extends AppCompatActivity {
         int days = sp.getInt("days" , 0);
         User user = new User(age ,height ,weight , gml , goal_weight ,exer , days , gender);
 
-        user.calculateCalories();
-        calories.setText(String.valueOf(user.daily_calories));
+        double tr  = user.calculateCalories();
+        calories.setText(String.valueOf(tr));
 
         settingsbutton.setOnClickListener(new View.OnClickListener() {
             @Override

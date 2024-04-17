@@ -31,7 +31,7 @@ public class MainActivity2 extends AppCompatActivity {
         int userWeight = sp.getInt("weight", 0);
 
 
-       SharedPreferences.Editor  editor= sp.edit();
+        SharedPreferences.Editor  editor= sp.edit();
 
         radios.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
