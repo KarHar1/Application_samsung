@@ -90,8 +90,17 @@
                 android:textSize="24dp"
                 app:fontFamily="@font/quicksand" />
 
+            <TextView
+                android:id="@+id/booo"
+                android:layout_width="316dp"
+                android:layout_height="50dp"
+                android:background="@drawable/edittext_1"
+                android:inputType="numberSigned"
+                android:textSize="24dp"
+                app:fontFamily="@font/quicksand" />
 
 
         </LinearLayout>
     </ScrollView>
+
 </androidx.constraintlayout.widget.ConstraintLayout>
