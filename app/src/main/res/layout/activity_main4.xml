@@ -6,7 +6,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MainActivity4">
-
     <Button
         android:id="@+id/settingsbttn"
         android:layout_width="100dp"
@@ -14,7 +13,6 @@
         android:text="Settings"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
-
     <RelativeLayout
         android:id="@+id/vector"
         android:layout_width="match_parent"
@@ -25,7 +23,6 @@
         android:gravity="top"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
-
         <TextView
             android:id="@+id/xxxx2"
             android:layout_width="wrap_content"
@@ -39,7 +36,6 @@
             android:textColor="#FFFFFF"
             android:textSize="24sp"
             app:fontFamily="@font/quicksand_bold" />
-
         <TextView
             android:id="@+id/xxxx"
             android:layout_width="wrap_content"
@@ -52,7 +48,17 @@
             android:text="Calories"
             android:textSize="24sp"
             app:fontFamily="@font/quicksand_bold" />
+        <TextView
+            android:id="@+id/blablabla"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_below="@+id/xxxx"
+            android:layout_alignParentLeft="true"
+            android:layout_marginLeft="-6dp"
+            android:layout_marginTop="23dp"
 
+            android:textSize="24sp"
+            app:fontFamily="@font/quicksand_bold" />
         <TextView
             android:id="@+id/xxxx1"
             android:layout_width="wrap_content"
@@ -69,11 +75,13 @@
     </RelativeLayout>
 
     <ScrollView
+        android:id="@+id/scrollView2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
         android:fillViewport="true"
         app:layout_constraintTop_toBottomOf="@+id/vector"
-        tools:layout_editor_absoluteX="-38dp">
+        tools:layout_editor_absoluteX="0dp">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -86,7 +94,7 @@
                 android:layout_width="316dp"
                 android:layout_height="50dp"
                 android:background="@drawable/edittext_1"
-                android:hint="Name"
+                android:hint="Search food.."
                 android:textSize="24dp"
                 app:fontFamily="@font/quicksand" />
 
@@ -95,12 +103,72 @@
                 android:layout_width="316dp"
                 android:layout_height="50dp"
                 android:background="@drawable/edittext_1"
+                android:hint="."
                 android:inputType="numberSigned"
                 android:textSize="24dp"
                 app:fontFamily="@font/quicksand" />
 
+            <ScrollView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
 
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+
+                    <ListView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+                </LinearLayout>
+            </ScrollView>
         </LinearLayout>
     </ScrollView>
 
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="108dp"
+        android:fillViewport="true"
+        app:layout_constraintTop_toBottomOf="@+id/scrollView2"
+        tools:layout_editor_absoluteX="0dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <EditText
+                android:id="@+id/searchBarExersize"
+                android:layout_width="316dp"
+                android:layout_height="50dp"
+                android:background="@drawable/edittext_1"
+                android:hint="Search exersizes.."
+                android:textSize="24dp"
+                app:fontFamily="@font/quicksand" />
+
+            <TextView
+                android:id="@+id/exersizView"
+                android:layout_width="316dp"
+                android:layout_height="200dp"
+                android:background="@drawable/edittext_1"
+                android:hint="."
+                android:textSize="24dp"
+                app:fontFamily="@font/quicksand" />
+
+            <ScrollView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+
+                    <ListView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+                </LinearLayout>
+            </ScrollView>
+        </LinearLayout>
+    </ScrollView>
 </androidx.constraintlayout.widget.ConstraintLayout>

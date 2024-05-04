@@ -1,11 +1,11 @@
-package com.example.myapplication;
+package com.example.demeter;
 
 import java.io.Serializable;
 
 class User implements Serializable {
     private static final long serialVersionUID = 1L;
     int days;
-    int age, weight, height, daily_calories, exer, gml ,goal_weight;
+    int age, weight,height, daily_calories, exer, gml ,goal_weight;
     String gender;
     String name;
 

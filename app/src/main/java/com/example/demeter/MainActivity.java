@@ -1,4 +1,4 @@
-package com.example.myapplication;
+package com.example.demeter;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -6,7 +6,6 @@ import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
@@ -15,8 +14,6 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.firebase.firestore.FirebaseFirestore;
-
-import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
     FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -71,7 +68,7 @@ public class MainActivity extends AppCompatActivity {
                     }
                     clearError(weightEditText);
 
-                    if (height < 0 || height > 3) {
+                    if (height < 0 || height > 300) {
                         setError("Enter a proper height", heightEditText);
                         return;
                     }

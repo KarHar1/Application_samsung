@@ -1,4 +1,4 @@
-package com.example.myapplication;
+package com.example.demeter;
 
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -13,10 +13,6 @@ import android.widget.CalendarView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Toast;
-
-import java.time.LocalDate;
-import java.time.temporal.ChronoUnit;
-import java.util.concurrent.TimeUnit;
 
 public class MainActivity3 extends AppCompatActivity {
 

@@ -1,4 +1,4 @@
-package com.example.myapplication;
+package com.example.demeter;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -10,7 +10,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
-import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 
