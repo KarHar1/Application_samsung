@@ -1,9 +1,9 @@
 package com.example.demeter;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
+import static com.example.demeter.MainActivity.PREFS_NAME;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Patterns;
 import android.view.View;
@@ -11,6 +11,9 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -25,9 +28,10 @@ public class LoginActivity extends AppCompatActivity {
     private TextView signupRedirectText;
     private Button loginButton;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        SharedPreferences prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
+        SharedPreferences.Editor ed = prefs.edit();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
@@ -53,6 +57,8 @@ public class LoginActivity extends AppCompatActivity {
                                         FirebaseUser user = auth.getCurrentUser();
                                         if (user != null && user.isEmailVerified()) {
                                             Toast.makeText(LoginActivity.this, "Login Successful", Toast.LENGTH_SHORT).show();
+                                            ed.putString("email", user.getEmail());
+                                            ed.apply();
                                             startActivity(new Intent(LoginActivity.this, MainActivity.class));
                                             finish();
                                         } else {
@@ -62,13 +68,12 @@ public class LoginActivity extends AppCompatActivity {
                                 }).addOnFailureListener(new OnFailureListener() {
                                     @Override
                                     public void onFailure(@NonNull Exception e) {
-                                        Toast.makeText(LoginActivity.this, "Login Failed", Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(LoginActivity.this, "Authentication failed: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                                     }
                                 });
                     } else {
                         loginPassword.setError("Password cannot be empty");
                     }
-
                 } else if (email.isEmpty()) {
                     loginEmail.setError("Email cannot be empty");
                 } else {

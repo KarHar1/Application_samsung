@@ -2,7 +2,6 @@ package com.example.demeter;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
@@ -10,23 +9,28 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
-
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import java.util.HashMap;
+import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
-    FirebaseFirestore db = FirebaseFirestore.getInstance();
-
 
     public static final String PREFS_NAME = "MyPrefsFile";
     public static final String FIRST_TIME_KEY = "first_time";
 
+    int gml = 0;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        SharedPreferences userPref = getSharedPreferences("UserInfo", MODE_PRIVATE);
-        SharedPreferences prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
+        SharedPreferences prefs = this.getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
+        String email = prefs.getString("email" , "");
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        DocumentReference docRef = db.collection("users").document(email);
 
         if (prefs.getBoolean(FIRST_TIME_KEY, true)) {
             setContentView(R.layout.activity_main);
@@ -45,7 +49,7 @@ public class MainActivity extends AppCompatActivity {
                     String ageString = ageEditText.getText().toString();
                     String weightString = weightEditText.getText().toString();
                     String heightString = heightEditText.getText().toString();
-                    String gender =genderSpinner.getSelectedItem().toString();
+                    String gender = genderSpinner.getSelectedItem().toString();
 
                     if (TextUtils.isEmpty(name) || TextUtils.isEmpty(ageString) ||
                             TextUtils.isEmpty(weightString) || TextUtils.isEmpty(heightString)) {
@@ -56,43 +60,33 @@ public class MainActivity extends AppCompatActivity {
                     int age = Integer.parseInt(ageString);
                     int weight = Integer.parseInt(weightString);
                     int height = Integer.parseInt(heightString);
-                    if (age < 0 || age > 100) {
-                        setError("Enter a proper age", ageEditText);
+
+                    if (age < 0 || age > 100 || weight < 0 || weight > 350 || height < 0 || height > 300) {
+                        Toast.makeText(MainActivity.this, "Enter proper values for age, weight, and height", Toast.LENGTH_LONG).show();
                         return;
                     }
-                    clearError(ageEditText);
 
-                    if (weight < 0 || weight > 350) {
-                        setError("Enter a proper weight", weightEditText);
-                        return;
-                    }
-                    clearError(weightEditText);
+                    Map<String, Object> user = new HashMap<>();
+                    user.put("name", name);
+                    user.put("age", age);
+                    user.put("weight", weight);
+                    user.put("height", height);
+                    user.put("gender", gender);
 
-                    if (height < 0 || height > 300) {
-                        setError("Enter a proper height", heightEditText);
-                        return;
-                    }
-                    clearError(heightEditText);
+                    db.collection("users")
+                            .document(email)
+                            .set(user)
+                            .addOnSuccessListener(aVoid -> {
+                                SharedPreferences.Editor prefsEditor = prefs.edit();
+                                prefsEditor.putBoolean(FIRST_TIME_KEY, false);
+                                prefsEditor.apply();
 
-
-
-
-
-
-                    SharedPreferences.Editor editor = userPref.edit();
-                    editor.putString("name", name);
-                    editor.putInt("age", age);
-                    editor.putInt("weight", weight);
-                    editor.putInt("height", height);
-                    editor.putString("gender", gender);
-                    editor.apply();
-
-                    SharedPreferences.Editor prefsEditor = prefs.edit();
-                    prefsEditor.putBoolean(FIRST_TIME_KEY, false);
-                    prefsEditor.apply();
-
-                    startActivity(new Intent(MainActivity.this, MainActivity2.class));
-                    finish();
+                                startActivity(new Intent(MainActivity.this, MainActivity2.class));
+                                finish();
+                            })
+                            .addOnFailureListener(e -> {
+                                Toast.makeText(MainActivity.this, "Error saving user data", Toast.LENGTH_LONG).show();
+                            });
                 }
             });
         } else {
@@ -102,25 +96,11 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public void setError(String error, EditText editText) {
-        editText.getBackground().setColorFilter(
-                getResources().getColor(R.color.red), PorterDuff.Mode.SRC_ATOP);
-        editText.setText("");
-        editText.setHint(error);
-    }
-
-    private void clearError(EditText editText) {
-        editText.getBackground().setColorFilter(
-                getResources().getColor(R.color.buttonColor), PorterDuff.Mode.SRC_ATOP);
-    }
-
     @Override
     public void onBackPressed() {
-
-        if (false) {
+        if(false){
             super.onBackPressed();
-        } else {
-
         }
+
     }
 }

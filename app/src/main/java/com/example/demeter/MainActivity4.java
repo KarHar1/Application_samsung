@@ -1,30 +1,38 @@
 package com.example.demeter;
 
+import static com.example.demeter.MainActivity.PREFS_NAME;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
-import android.os.Handler;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
+
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
-import io.grpc.internal.JsonParser;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.OkHttpClient;
@@ -33,53 +41,53 @@ import okhttp3.Response;
 
 public class MainActivity4 extends AppCompatActivity {
 
+    FirebaseFirestore db;
+    String email;
+    long currentday;
+    DocumentReference docRef;
+    Map<String, String> value;
     private TextView eatten;
-    private TextView calories , errorMessagePlace;
-    private TextView burned , burnedView;
-    private EditText searchbar , exersizeSearch;
+    private TextView calories;
+    private TextView burned;
+    private EditText searchbar;
     private TextView booo;
+    private Button okFoodButton;
+    private Button noFoodButton;
+    private TextView errorMessagePlace;
+    private ListView foodItems;
+    int itemNumber;
+    private ArrayAdapter<String> adapter;
     private double totalCalories = 0;
-    private double totalCalories1 = 0;
-
     private double totalBurnedCalories = 0;
+    private StringBuilder itemsInfo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main4);
+        currentday = System.currentTimeMillis();
+        HashMap<String, Object> foodInfoList = new HashMap<>();
+
+        db = FirebaseFirestore.getInstance();
+        SharedPreferences prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
+        email = prefs.getString("email", "");
+        docRef = db.collection("users").document(email);
+
+        value =  new HashMap<>();
 
         eatten = findViewById(R.id.xxxx2);
         calories = findViewById(R.id.xxxx);
         burned = findViewById(R.id.xxxx1);
         searchbar = findViewById(R.id.searchBar);
-        exersizeSearch = findViewById(R.id.searchBarExersize);
         booo = findViewById(R.id.booo);
-        burnedView = findViewById(R.id.exersizView);
+        okFoodButton = findViewById(R.id.okButton);
+        noFoodButton = findViewById(R.id.noButton);
         errorMessagePlace = findViewById(R.id.blablabla);
+        foodItems = findViewById(R.id.foodItemList);
+        adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1);
+        foodItems.setAdapter(adapter);
 
-        SharedPreferences sp = getSharedPreferences("UserInfo", Context.MODE_PRIVATE);
-
-        Button settingsbutton = findViewById(R.id.settingsbttn);
-
-        settingsbutton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(MainActivity4.this, Settings.class));
-            }
-        });
-
-        int age = sp.getInt("age", 0);
-        int weight = sp.getInt("weight", 0);
-        int height = sp.getInt("height", 0);
-        String gender = sp.getString("gender", "male");
-        int goal_weight = sp.getInt("goalWeight", 0);
-        int gml = sp.getInt("gml", 0);
-        int exer = sp.getInt("exer", 1);
-        int days = sp.getInt("days", 0);
-        User user = new User(age, height, weight, gml, goal_weight, exer, days, gender);
-
-        double tr = user.calculateCalories();
-        calories.setText(String.valueOf(tr));
+        fetchUserData();
 
         searchbar.addTextChangedListener(new TextWatcher() {
             @Override
@@ -91,128 +99,114 @@ public class MainActivity4 extends AppCompatActivity {
             @Override
             public void afterTextChanged(Editable s) {
                 String query = searchbar.getText().toString();
-                Log.d("Debug", "Search query: " + query); // Log the search query
                 performSearch(query);
             }
         });
 
-        // OnClickListener for "booo" TextView
-        booo.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                eatten.setText(String.valueOf(Double.parseDouble(eatten.getText().toString()) + totalCalories));
-                totalBurnedCalories += totalCalories; // Update total burned calories
-
-
-                if(Double.parseDouble(calories.getText().toString())+Double.parseDouble(burned.getText().toString())<Double.parseDouble(eatten.getText().toString())){
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            calories.getBackground().setColorFilter(
-                                    getResources().getColor(R.color.red), PorterDuff.Mode.SRC_ATOP);
-                            errorMessagePlace.setText("you have passed your  limit for today");
-                        }
-                    });
-
-                }
-            }
-        });
-        burnedView.setOnClickListener(new View.OnClickListener() {
+        okFoodButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 try {
-                    burned.setText(String.valueOf(Double.parseDouble(burned.getText().toString()) + totalCalories1));
-                }catch (NumberFormatException e){
-                    burned.setText("0");
-                    burned.setText(String.valueOf(Double.parseDouble(burned.getText().toString()) + totalCalories1));
+                    double currentEatenCalories = Double.parseDouble(eatten.getText().toString());
+                    double updatedEatenCalories = currentEatenCalories + totalCalories;
+                    eatten.setText(String.valueOf(updatedEatenCalories));
+                    totalBurnedCalories += totalCalories;
 
-                }
-
-            }
-        });
-
-
-        exersizeSearch.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                performExersizeSearch(exersizeSearch.getText().toString());
-
-            }
-        });
-    }
-
-    private void performExersizeSearch(String query) {
-        OkHttpClient client = new OkHttpClient();
-
-        Request request = new Request.Builder()
-                .url("https://api.api-ninjas.com/v1/caloriesburned?activity=" + query)
-                .header("X-Api-Key", "Z5SIEjAXzW3uB7AaD5rfUYNGG2kyMOB8fREdkDvX")
-                .build();
-        client.newCall(request).enqueue(new Callback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
-                e.printStackTrace();
-            }
-
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                try {
-                    if (!response.isSuccessful()) {
-                        throw new IOException("Unexpected code " + response);
+                    if (itemsInfo != null) {
+                        adapter.add(itemsInfo.toString());
+                        saveUserData("caloriesEaten", totalBurnedCalories);
+                        foodInfoList.put(Integer.toString(itemNumber), itemsInfo);
+                        value.put(Long.toString(currentday), foodInfoList.toString() );
+                        itemNumber++;
+                        db.collection("users").document("dailyInfo").set(value);
                     }
 
-                    JSONArray jsonArray = new JSONArray(response.body().string());
-
-                    if (jsonArray.length() > 0) {
-                        JSONObject obj = jsonArray.getJSONObject(0); // Take the first object
-
-                        String name = obj.getString("name");
-                         totalCalories1 = obj.getDouble("total_calories");
-
-                        // Update UI with retrieved data
+                    double totalCaloriesConsumed = Double.parseDouble(calories.getText().toString()) + totalBurnedCalories;
+                    double totalCaloriesBurned = Double.parseDouble(burned.getText().toString());
+                    if (totalCaloriesConsumed > totalCaloriesBurned) {
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                // Update UI elements
-                                burnedView.setText("Exercise: " + name +
-                                        "\nTotal Calories: " + totalCalories1);
+                                calories.getBackground().setColorFilter(
+                                        getResources().getColor(R.color.red), PorterDuff.Mode.SRC_ATOP);
+                                errorMessagePlace.setText("You have exceeded your daily calorie limit.");
                             }
                         });
                     } else {
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                // Update UI elements to show no results
-                                burnedView.setText("No exercise found with the given query.");
+                                calories.getBackground().setColorFilter(
+                                        getResources().getColor(R.color.white), PorterDuff.Mode.SRC_ATOP);
+                                errorMessagePlace.setText("");
                             }
                         });
                     }
-                } catch (JSONException | IOException e) {
-                    e.printStackTrace();
+                } catch (NumberFormatException e) {
+                    burned.setText("0");
+                    eatten.setText(String.valueOf(totalCalories));
+                }
+            }
+        });
+
+        noFoodButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                searchbar.setText("");
+            }
+        });
+    }
+
+    private void fetchUserData() {
+        docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    if (document != null && document.exists()) {
+                        handleUserData(document);
+                    }
+                } else {
+                    Log.d("MainActivity4", "get failed with ", task.getException());
                 }
             }
         });
     }
 
+    private void handleUserData(DocumentSnapshot document) {
+        Object eatenValue = document.get("eatten");
+        if (eatenValue != null) {
+            eatten.setText(String.valueOf(eatenValue));
+        }
 
+        Object burnedValue = document.get("burned");
+        if (burnedValue != null) {
+            burned.setText(String.valueOf(burnedValue));
+        }
+
+        int age = document.getLong("age").intValue();
+        int weight = document.getLong("weight").intValue();
+        int height = document.getLong("height").intValue();
+        String gender = document.getString("gender");
+        int goal_weight = document.getLong("goalWeight").intValue();
+        int gml = document.getLong("gml").intValue();
+        int exer = document.getLong("exer").intValue();
+        int days = document.getLong("days").intValue();
+
+        User user = new User(age, height, weight, gml, goal_weight, exer, days, gender);
+        double tr = user.calculateCalories();
+        saveUserData("dailyCalories", Float.parseFloat(String.valueOf(tr)));
+        calories.setText(String.valueOf(tr));
+    }
 
     private void performSearch(String query) {
         OkHttpClient client = new OkHttpClient();
 
         Request request = new Request.Builder()
-                .url("https://api.calorieninjas.com/v1/nutrition?query=" + query)
-                .header("X-Api-Key", "An8kO+LlVrcipoCzOWxszw==hEmVWrmAWS5JCBvw")
+                .url("https://api.api-ninjas.com/v1/nutrition?query=" + query)
+                .header("X-Api-Key", "Z5SIEjAXzW3uB7AaD5rfUYNGG2kyMOB8fREdkDvX")
                 .build();
+
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(@NonNull Call call, @NonNull IOException e) {
@@ -220,57 +214,51 @@ public class MainActivity4 extends AppCompatActivity {
             }
 
             @Override
-            public void onResponse(@NonNull Call call, @NonNull Response response) {
+            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
                 try {
                     if (!response.isSuccessful()) {
-                        Log.d("Debug", "blyaaa"); // Log the search query
+                        Log.d("MainActivity4", "Request failed with code: " + response.code());
                         throw new IOException("Unexpected code " + response);
                     }
 
-                    // Parse JSON response
-                    JSONObject jsonObject = new JSONObject(response.body().string());
-                    JSONArray dataArr = jsonObject.getJSONArray("items");
+                    JSONArray jsonArray = new JSONArray(response.body().string());
+                    itemsInfo = new StringBuilder();
 
-                    // Initialize StringBuilder to hold item information
-                    StringBuilder itemsInfo = new StringBuilder();
-
-                    // Iterate over each item in the response
-                    for (int i = 0; i < dataArr.length(); i++) {
-                        JSONObject data = dataArr.getJSONObject(i);
-
-                        // Extract item details
+                    for (int i = 0; i < jsonArray.length(); i++) {
+                        JSONObject data = jsonArray.getJSONObject(i);
                         String itemName = data.getString("name");
                         double caloriesValue = data.getDouble("calories");
-
-                        // Append item information to the StringBuilder
                         itemsInfo.append("Item: ").append(itemName).append("\nCalories: ").append(caloriesValue).append("\n\n");
-
-                        // Update total calories
                         totalCalories += caloriesValue;
                     }
 
-                    // Update UI with retrieved data
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            // Update UI elements
                             eatten.setText(String.valueOf(totalBurnedCalories));
-                            booo.setText(itemsInfo.toString()); // Set text to "booo" TextView
+                            if (itemsInfo != null) {
+                                booo.setText(itemsInfo.toString());
+                            } else {
+                                booo.setText("No items found.");
+                            }
                         }
                     });
-                } catch (JSONException | IOException e) {
+                } catch (JSONException e) {
                     e.printStackTrace();
-                    // Handle JSON parsing or IO exception
                 }
             }
         });
     }
+
+    private void saveUserData(String nameOBJ, Object value) {
+        docRef.update(nameOBJ, value);
+    }
+
 
     @Override
     public void onBackPressed() {
         if(false){
             super.onBackPressed();
         }
-
     }
 }

@@ -1,12 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity4">
-
+    tools:context=".MainActivity5">
 
 
     <RelativeLayout
@@ -17,7 +15,7 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <TextView
-            android:id="@+id/xxxx2"
+            android:id="@+id/eatenTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="14dp"
@@ -29,7 +27,7 @@
             app:fontFamily="@font/quicksand_bold" />
 
         <TextView
-            android:id="@+id/xxxx"
+            android:id="@+id/caloriesTextView"
             android:layout_width="wrap_content"
             android:layout_height="40dp"
             android:layout_marginLeft="160dp"
@@ -40,17 +38,17 @@
             app:fontFamily="@font/quicksand_bold" />
 
         <TextView
-            android:id="@+id/blablabla"
+            android:id="@+id/blablablaTextView"
             android:layout_width="match_parent"
             android:layout_height="40dp"
-            android:layout_below="@id/xxxx"
+            android:layout_below="@id/caloriesTextView"
             android:layout_marginLeft="-6dp"
             android:layout_marginTop="23dp"
             android:textSize="24sp"
             app:fontFamily="@font/quicksand_bold" />
 
         <TextView
-            android:id="@+id/xxxx1"
+            android:id="@+id/burnedTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
@@ -65,69 +63,70 @@
 
     <ScrollView
         android:id="@+id/scrollView2"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
         android:layout_marginTop="20dp"
-        app:layout_constraintBottom_toTopOf="@id/list_view_container"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/vector"
-        app:layout_constraintVertical_bias="0.0">
+        app:layout_constraintTop_toBottomOf="@id/vector">
 
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/layout123"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
             <EditText
-                android:id="@+id/searchBar"
+                android:id="@+id/searchBarExercises"
                 android:layout_width="336dp"
                 android:layout_height="50dp"
                 android:layout_gravity="center"
                 android:layout_marginTop="4dp"
                 android:background="@drawable/edittext_1"
-                android:hint="Search food..(in grams), def(100g)"
-                android:textSize="20dp"
+                android:hint="Search exercises.."
+                android:textSize="24sp"
                 app:fontFamily="@font/quicksand"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
-                android:id="@+id/booo"
+                android:id="@+id/exerciseView"
                 android:layout_width="280dp"
-                android:layout_height="110dp"
+                android:layout_height="115dp"
                 android:layout_marginStart="40dp"
                 android:layout_marginTop="4dp"
                 android:background="@drawable/edittext_1"
                 android:hint="."
                 android:inputType="numberSigned"
-                android:textSize="24dp"
+                android:textSize="24sp"
                 app:fontFamily="@font/quicksand"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/searchBar" />
+                app:layout_constraintTop_toBottomOf="@+id/searchBarExercises" />
 
             <Button
-                android:id="@+id/okButton"
+                android:id="@+id/okExButton"
                 android:layout_width="60dp"
                 android:layout_height="55dp"
                 android:layout_marginTop="4dp"
-                android:background="@color/green"
                 android:text="add"
-                app:layout_constraintStart_toEndOf="@+id/booo"
-                app:layout_constraintTop_toBottomOf="@+id/searchBar" />
+                android:background="@color/green"
+                app:layout_constraintStart_toEndOf="@+id/exerciseView"
+                app:layout_constraintTop_toBottomOf="@+id/searchBarExercises" />
 
             <Button
-                android:id="@+id/noButton"
+                android:id="@+id/noExButton"
                 android:layout_width="60dp"
                 android:layout_height="55dp"
-                android:background="@color/red"
+                android:layout_marginTop="4dp"
                 android:text="remove"
-                app:layout_constraintStart_toEndOf="@+id/booo"
-                app:layout_constraintTop_toBottomOf="@+id/okButton" />
+                android:background="@color/red"
+                app:layout_constraintStart_toEndOf="@+id/exerciseView"
+                app:layout_constraintTop_toBottomOf="@+id/okExButton" />
+
 
         </androidx.constraintlayout.widget.ConstraintLayout>
+
     </ScrollView>
 
     <LinearLayout
@@ -209,5 +208,4 @@
         </com.google.android.material.bottomappbar.BottomAppBar>
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
-
 </androidx.constraintlayout.widget.ConstraintLayout>

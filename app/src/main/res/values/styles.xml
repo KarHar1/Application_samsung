@@ -1,5 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <style name="BottomAppBarTheme" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">#0F5132</item>
+        <item name="colorPrimaryDark">#0F5132</item>
+        <item name="colorAccent">#0F5132</item>
+    </style>
+
     <style name="yourself">
         <item name="android:textSize">34sp</item>
         <item name="android:textColor">#510F2E</item>
