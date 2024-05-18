@@ -100,7 +100,10 @@ public class MainActivity6 extends AppCompatActivity {
                 }
             }
         });
+
+
     }
+
 
     private void handleUserData(DocumentSnapshot document) {
         int age = document.getLong("age").intValue();

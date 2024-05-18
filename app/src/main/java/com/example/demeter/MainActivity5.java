@@ -81,7 +81,7 @@ public class MainActivity5 extends Fragment {
         SharedPreferences.Editor ed = pref.edit();
 
         db = FirebaseFirestore.getInstance();
-        docRef = db.collection("users").document(email);
+        docRef = db.collection("users").document(email).collection(dateOFToday).document("Exer");
 
         ListView exersizeList = view.findViewById(R.id.foodItemList);
 
@@ -214,8 +214,8 @@ public class MainActivity5 extends Fragment {
     }
 
     private void fechtlistdata() {
-        db.collection("users").document(email).collection("Exer")
-                .document(dateOFToday).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+        db.collection("users").document(email).collection(dateOFToday)
+                .document("Exer").get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                         if (task.isSuccessful()) {
@@ -246,6 +246,6 @@ public class MainActivity5 extends Fragment {
     }
 
     private void exerInfoSave(Object value) {
-        db.collection("users").document(email).collection("Exer").document(dateOFToday).set(value);
+        db.collection("users").document(email).collection(dateOFToday).document("Exer").set(value);
     }
 }

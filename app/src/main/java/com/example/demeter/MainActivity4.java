@@ -200,8 +200,8 @@ public class MainActivity4 extends Fragment {
     private void fechtlistdata(){
 
 
-        db.collection("users").document(email).collection("Food").
-                document(dateOFToday).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+        db.collection("users").document(email).collection(dateOFToday).
+                document("Food").get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                         if (task.isSuccessful()) {
@@ -317,6 +317,6 @@ public class MainActivity4 extends Fragment {
     }
     private void exerInfoSave(Object value) {
 
-        db.collection("users").document(email).collection("Food").document(dateOFToday).set(value);
+        db.collection("users").document(email).collection(dateOFToday).document("Food").set(value);
     }
 }
