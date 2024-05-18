@@ -6,9 +6,11 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -19,7 +21,10 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import org.json.JSONArray;
@@ -27,7 +32,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.util.ArrayList;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
+import java.util.Map;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -37,31 +45,40 @@ import okhttp3.Response;
 
 public class MainActivity5 extends Fragment {
 
-    private TextView eatten;
+    private TextView eatten, burned;
     private Button okExersizeButton, noEexersizeButton;
     private StringBuilder itemsInfoExer;
     private EditText exersizeSearch;
-    private ArrayList<String> allTimeExerInfo;
-    private ArrayAdapter<String> adapterExer;
+    private ArrayAdapter<String> adapterExer, adptr;
     private double totalCalories1 = 0;
+    private int numberOfItmes;
+    private HashMap<String, String> mapOfExer;
 
     private FirebaseFirestore db;
     private String email;
     private DocumentReference docRef;
 
-    private TextView burned , burnedView;
+    private String dateOFToday;
+    private ListView burnedView;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.activity_main5, container, false);
 
+        mapOfExer = new HashMap<>();
         eatten = getActivity().findViewById(R.id.eatenTextView);
         burned = getActivity().findViewById(R.id.burnedTextView);
-        burnedView = getActivity().findViewById(R.id.exerciseView);
+        burnedView = view.findViewById(R.id.exerciseView);
+        numberOfItmes = 0;
+
+        LocalDate currentDate = LocalDate.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
+        dateOFToday = currentDate.format(formatter);
 
         SharedPreferences pref = getActivity().getSharedPreferences(PREFS_NAME, 0);
         email = pref.getString("email", "");
+        SharedPreferences.Editor ed = pref.edit();
 
         db = FirebaseFirestore.getInstance();
         docRef = db.collection("users").document(email);
@@ -69,7 +86,6 @@ public class MainActivity5 extends Fragment {
         ListView exersizeList = view.findViewById(R.id.foodItemList);
 
         itemsInfoExer = new StringBuilder();
-        allTimeExerInfo = new ArrayList<>();
         exersizeSearch = view.findViewById(R.id.searchBarExercises);
 
         okExersizeButton = view.findViewById(R.id.okExButton);
@@ -90,27 +106,53 @@ public class MainActivity5 extends Fragment {
 
         // Adapter for exercises
         adapterExer = new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_1);
+        adptr = new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_1);
         exersizeList.setAdapter(adapterExer);
+        burnedView.setAdapter(adptr);
 
-        okExersizeButton.setOnClickListener(new View.OnClickListener() {
+        fechtlistdata(); // Fetch the list data from Firestore
+
+        burnedView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public void onClick(View v) {
-                try {
-                    burned.setText(String.valueOf(Double.parseDouble(burned.getText().toString()) + totalCalories1));
-                    adapterExer.add(itemsInfoExer.toString());
-                    allTimeExerInfo.add(itemsInfoExer.toString());
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                {
+                    try {
+                        String selectedItem = adptr.getItem(position);
+                        if (selectedItem != null) {
+                            numberOfItmes++;
+                            itemsInfoExer.append(selectedItem);
+                            adapterExer.add(selectedItem);
 
-                    // Save to Firestore
-                    saveUserData("caloriesBurned", totalCalories1);
-                    exerInfoSave("exercises", itemsInfoExer.toString());
-                } catch (NumberFormatException e) {
-                    burned.setText("0");
-                    burned.setText(String.valueOf(Double.parseDouble(burned.getText().toString()) + totalCalories1));
+                            // Extract calories from the selected item
+                            double selectedCalories = extractCaloriesFromString(selectedItem);
+                            totalCalories1 += selectedCalories;
+                            burned.setText(String.valueOf(totalCalories1));
+
+                            // Save to Firestore
+                            saveUserData("caloriesBurned", totalCalories1);
+
+                            mapOfExer.put(String.valueOf(numberOfItmes), selectedItem);
+                            exerInfoSave(mapOfExer);
+                        }
+                    } catch (NumberFormatException e) {
+                        burned.setText("0");
+                    }
                 }
             }
         });
 
         return view;
+    }
+
+    private double extractCaloriesFromString(String itemInfo) {
+        String[] parts = itemInfo.split("\n");
+        for (String part : parts) {
+            if (part.startsWith("Calories:")) {
+                String caloriesStr = part.split(":")[1].trim();
+                return Double.parseDouble(caloriesStr);
+            }
+        }
+        return 0;
     }
 
     private void performExersizeSearch(String query) {
@@ -129,39 +171,73 @@ public class MainActivity5 extends Fragment {
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
-                try {
-                    if (!response.isSuccessful()) {
-                        throw new IOException("Unexpected code " + response);
-                    }
+                if (!response.isSuccessful()) {
+                    throw new IOException("Unexpected code " + response);
+                }
 
-                    JSONArray jsonArray = new JSONArray(response.body().string());
+                String responseBody = response.body().string();
+                try {
+                    JSONArray jsonArray = new JSONArray(responseBody);
 
                     if (jsonArray.length() > 0) {
-                        JSONObject obj = jsonArray.getJSONObject(0);
-
-                        String name = obj.getString("name");
-                        totalCalories1 = obj.getDouble("total_calories");
-                        itemsInfoExer.append("Item: ").append(name).append("\nCalories: ").append(totalCalories1).append("\n\n");
-
                         getActivity().runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                burnedView.setText(itemsInfoExer);
+                                adptr.clear(); // Clear the adapter before adding new items
+                                for (int i = 0; i < jsonArray.length(); i++) {
+                                    try {
+                                        JSONObject obj = jsonArray.getJSONObject(i);
+                                        String name = obj.getString("name");
+                                        double totalCalories = obj.getDouble("total_calories");
+                                        String itemInfo = "Item: " + name + "\nCalories: " + totalCalories + "\n\n";
+                                        adptr.add(itemInfo); // Add each item to the adapter
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
+                                    }
+                                }
                             }
                         });
                     } else {
                         getActivity().runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                burnedView.setText("No exercise found with the given query.");
+                                adptr.clear();
+                                adptr.add("No exercise found with the given query.");
                             }
                         });
                     }
-                } catch (JSONException | IOException e) {
+                } catch (JSONException e) {
                     e.printStackTrace();
                 }
             }
         });
+    }
+
+    private void fechtlistdata() {
+        db.collection("users").document(email).collection("Exer")
+                .document(dateOFToday).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        if (task.isSuccessful()) {
+                            DocumentSnapshot document = task.getResult();
+                            if (document != null && document.exists()) {
+                                handleUserDataList(document);
+                            }
+                        } else {
+                            Log.d("Fragment4", "get failed with ", task.getException());
+                        }
+                    }
+                });
+    }
+
+    private void handleUserDataList(DocumentSnapshot document) {
+        Map<String, Object> data = document.getData();
+        if (data != null) {
+            for (Map.Entry<String, Object> entry : data.entrySet()) {
+                String exerciseInfo = (String) entry.getValue();
+                adapterExer.add(exerciseInfo);
+            }
+        }
     }
 
     private void saveUserData(String nameOBJ, Object value) {
@@ -169,7 +245,7 @@ public class MainActivity5 extends Fragment {
         docRef.update(nameOBJ, value);
     }
 
-    private void exerInfoSave(String nameOBJ, Object value) {
-        docRef.collection("days_exer").add(value);
+    private void exerInfoSave(Object value) {
+        db.collection("users").document(email).collection("Exer").document(dateOFToday).set(value);
     }
 }

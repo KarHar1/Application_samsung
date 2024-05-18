@@ -32,7 +32,10 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentSnapshot;
 import android.util.Log;
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -65,6 +68,8 @@ public class MainActivity4 extends Fragment {
     private TextView calories;
     private TextView burned;
     private TextView errorMessagePlace;
+    String dateOFToday;
+
     int itemNumber;
 
     @Nullable
@@ -72,13 +77,17 @@ public class MainActivity4 extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.activity_main4, container, false);
 
+        LocalDate currentDate = LocalDate.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
+         dateOFToday = currentDate.format(formatter);
+
         eatten = getActivity().findViewById(R.id.eatenTextView);
         calories = getActivity().findViewById(R.id.caloriesTextView);
         burned = getActivity().findViewById(R.id.burnedTextView);
         errorMessagePlace = getActivity().findViewById(R.id.blablablaTextView);
 
         currentday = System.currentTimeMillis();
-        HashMap<String, Object> foodInfoList = new HashMap<>();
+
 
         db = FirebaseFirestore.getInstance();
         SharedPreferences prefs = getActivity().getSharedPreferences(PREFS_NAME, 0);
@@ -97,6 +106,7 @@ public class MainActivity4 extends Fragment {
         foodItems.setAdapter(adapter);
 
         fetchUserData();
+        fetchUserData();
 
         searchbar.addTextChangedListener(new TextWatcher() {
             @Override
@@ -111,6 +121,7 @@ public class MainActivity4 extends Fragment {
                 performSearch(query);
             }
         });
+        fechtlistdata();
 
         okFoodButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -124,10 +135,11 @@ public class MainActivity4 extends Fragment {
                     if (itemsInfo != null) {
                         adapter.add(itemsInfo.toString());
                         saveUserData("caloriesEaten", totalBurnedCalories);
-                        foodInfoList.put(Integer.toString(itemNumber), itemsInfo);
-                        value.put(Long.toString(currentday), foodInfoList.toString());
+                        value.put(String.valueOf(itemNumber), itemsInfo.toString());
                         itemNumber++;
-                        db.collection("users").document("dailyInfo").set(value);
+
+                        exerInfoSave(value);
+
                     }
 
                     double totalCaloriesConsumed = Double.parseDouble(calories.getText().toString()) + totalBurnedCalories;
@@ -153,7 +165,23 @@ public class MainActivity4 extends Fragment {
                     }
                 } catch (NumberFormatException e) {
                     burned.setText("0");
-                    eatten.setText(String.valueOf(totalCalories));
+
+                    double currentEatenCalories = Double.parseDouble(eatten.getText().toString());
+                    double updatedEatenCalories = currentEatenCalories + totalCalories;
+                    eatten.setText(String.valueOf(updatedEatenCalories));
+                    totalBurnedCalories += totalCalories;
+
+                    if (itemsInfo != null) {
+                        adapter.add(itemsInfo.toString());
+                        saveUserData("caloriesEaten", totalBurnedCalories);
+
+                        value.put(String.valueOf(itemNumber), itemsInfo.toString());
+                        itemNumber++;
+
+                        exerInfoSave(value);
+
+                    }
+
                 }
             }
         });
@@ -166,6 +194,33 @@ public class MainActivity4 extends Fragment {
         });
 
         return view;
+    }
+
+
+    private void fechtlistdata(){
+
+
+        db.collection("users").document(email).collection("Food").
+                document(dateOFToday).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        if (task.isSuccessful()) {
+                            DocumentSnapshot document = task.getResult();
+                            if (document != null && document.exists()) {
+                                handleUserDataList(document);
+                            }
+                        } else {
+                            Log.d("Fragment4", "get failed with ", task.getException());
+                        }
+                    }
+                });
+
+    }
+    private void handleUserDataList(DocumentSnapshot document) {
+        Map<String, Object> arr  = new HashMap<>( document.getData());
+        for(int i = 0 ; i<arr.size() ; i++){
+            adapter.add((String) arr.get(String.valueOf(i)));
+        }
     }
 
     private void fetchUserData() {
@@ -184,16 +239,9 @@ public class MainActivity4 extends Fragment {
         });
     }
 
-    private void handleUserData(DocumentSnapshot document) {
-        Object eatenValue = document.get("eatten");
-        if (eatenValue != null) {
-            eatten.setText(String.valueOf(eatenValue));
-        }
 
-        Object burnedValue = document.get("burned");
-        if (burnedValue != null) {
-            burned.setText(String.valueOf(burnedValue));
-        }
+    private void handleUserData(DocumentSnapshot document) {
+
 
         int age = document.getLong("age").intValue();
         int weight = document.getLong("weight").intValue();
@@ -204,9 +252,12 @@ public class MainActivity4 extends Fragment {
         int exer = document.getLong("exer").intValue();
         int days = document.getLong("days").intValue();
 
-        User user = new User(age, height, weight, gml, goal_weight, exer, days, gender);
-        double tr = user.calculateCalories();
-        saveUserData("dailyCalories", Float.parseFloat(String.valueOf(tr)));
+
+
+
+
+        double tr = document.getLong("dailyCalories").intValue();
+
         calories.setText(String.valueOf(tr));
     }
 
@@ -263,5 +314,9 @@ public class MainActivity4 extends Fragment {
 
     private void saveUserData(String nameOBJ, Object value) {
         docRef.update(nameOBJ, value);
+    }
+    private void exerInfoSave(Object value) {
+
+        db.collection("users").document(email).collection("Food").document(dateOFToday).set(value);
     }
 }

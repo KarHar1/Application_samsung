@@ -25,7 +25,7 @@ public class SplashActivity extends AppCompatActivity {
             SharedPreferences.Editor ed = prefs.edit();
             ed.putString("email", user.getEmail());
             ed.apply(); // Commit changes to SharedPreferences
-            startActivity(new Intent(SplashActivity.this, MainActivity.class));
+            startActivity(new Intent(SplashActivity.this, MainActivity6.class));
         } else {
             startActivity(new Intent(SplashActivity.this, LoginActivity.class));
         }
