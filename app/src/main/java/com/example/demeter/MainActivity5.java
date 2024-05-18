@@ -2,18 +2,22 @@ package com.example.demeter;
 
 import static com.example.demeter.MainActivity.PREFS_NAME;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
 
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -31,39 +35,45 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
-public class MainActivity5 extends AppCompatActivity {
+public class MainActivity5 extends Fragment {
+
     private TextView eatten;
-    private TextView calories, errorMessagePlace;
     private Button okExersizeButton, noEexersizeButton;
-    StringBuilder itemsInfoExer;
-    private TextView burned, burnedView;
+    private StringBuilder itemsInfoExer;
     private EditText exersizeSearch;
-    ArrayList<String> allTimeExerInfo;
+    private ArrayList<String> allTimeExerInfo;
     private ArrayAdapter<String> adapterExer;
     private double totalCalories1 = 0;
 
-    FirebaseFirestore db;
-    String email;
-    DocumentReference docRef;
+    private FirebaseFirestore db;
+    private String email;
+    private DocumentReference docRef;
 
+    private TextView burned , burnedView;
+
+    @Nullable
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main5);
-        SharedPreferences pref =  getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
-        email = pref.getString("email",  "");
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.activity_main5, container, false);
+
+        eatten = getActivity().findViewById(R.id.eatenTextView);
+        burned = getActivity().findViewById(R.id.burnedTextView);
+        burnedView = getActivity().findViewById(R.id.exerciseView);
+
+        SharedPreferences pref = getActivity().getSharedPreferences(PREFS_NAME, 0);
+        email = pref.getString("email", "");
 
         db = FirebaseFirestore.getInstance();
-        docRef = db.collection("users").document(email); // Assuming you have a Firestore document reference here
+        docRef = db.collection("users").document(email);
 
-        ListView exersizeList = findViewById(R.id.foodItemList);
+        ListView exersizeList = view.findViewById(R.id.foodItemList);
 
         itemsInfoExer = new StringBuilder();
         allTimeExerInfo = new ArrayList<>();
-        exersizeSearch = findViewById(R.id.searchBarExercises);
+        exersizeSearch = view.findViewById(R.id.searchBarExercises);
 
-        okExersizeButton = findViewById(R.id.okExButton);
-        noEexersizeButton = findViewById(R.id.noExButton);
+        okExersizeButton = view.findViewById(R.id.okExButton);
+        noEexersizeButton = view.findViewById(R.id.noExButton);
 
         exersizeSearch.addTextChangedListener(new TextWatcher() {
             @Override
@@ -79,7 +89,7 @@ public class MainActivity5 extends AppCompatActivity {
         });
 
         // Adapter for exercises
-        adapterExer = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1);
+        adapterExer = new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_1);
         exersizeList.setAdapter(adapterExer);
 
         okExersizeButton.setOnClickListener(new View.OnClickListener() {
@@ -99,6 +109,8 @@ public class MainActivity5 extends AppCompatActivity {
                 }
             }
         });
+
+        return view;
     }
 
     private void performExersizeSearch(String query) {
@@ -125,20 +137,20 @@ public class MainActivity5 extends AppCompatActivity {
                     JSONArray jsonArray = new JSONArray(response.body().string());
 
                     if (jsonArray.length() > 0) {
-                        JSONObject obj = jsonArray.getJSONObject(0); // Take the first object
+                        JSONObject obj = jsonArray.getJSONObject(0);
 
                         String name = obj.getString("name");
                         totalCalories1 = obj.getDouble("total_calories");
                         itemsInfoExer.append("Item: ").append(name).append("\nCalories: ").append(totalCalories1).append("\n\n");
 
-                        runOnUiThread(new Runnable() {
+                        getActivity().runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
                                 burnedView.setText(itemsInfoExer);
                             }
                         });
                     } else {
-                        runOnUiThread(new Runnable() {
+                        getActivity().runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
                                 burnedView.setText("No exercise found with the given query.");
@@ -156,7 +168,8 @@ public class MainActivity5 extends AppCompatActivity {
         // Save user data to Firestore
         docRef.update(nameOBJ, value);
     }
-    private void exerInfoSave(String nameOBJ, Object value){
+
+    private void exerInfoSave(String nameOBJ, Object value) {
         docRef.collection("days_exer").add(value);
     }
 }

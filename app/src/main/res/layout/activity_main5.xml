@@ -7,69 +7,8 @@
     tools:context=".MainActivity5">
 
 
-    <RelativeLayout
-        android:id="@+id/vector"
-        android:layout_width="match_parent"
-        android:layout_height="139.79dp"
-        android:background="@drawable/vector"
-        app:layout_constraintTop_toTopOf="parent">
 
-        <TextView
-            android:id="@+id/eatenTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="14dp"
-            android:layout_marginTop="76dp"
-            android:background="#FF5722"
-            android:text="Eaten"
-            android:textColor="#FFFFFF"
-            android:textSize="24sp"
-            app:fontFamily="@font/quicksand_bold" />
-
-        <TextView
-            android:id="@+id/caloriesTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="40dp"
-            android:layout_marginLeft="160dp"
-            android:layout_marginTop="38dp"
-            android:background="#FFFFFF"
-            android:text="Calories"
-            android:textSize="24sp"
-            app:fontFamily="@font/quicksand_bold" />
-
-        <TextView
-            android:id="@+id/blablablaTextView"
-            android:layout_width="match_parent"
-            android:layout_height="40dp"
-            android:layout_below="@id/caloriesTextView"
-            android:layout_marginLeft="-6dp"
-            android:layout_marginTop="23dp"
-            android:textSize="24sp"
-            app:fontFamily="@font/quicksand_bold" />
-
-        <TextView
-            android:id="@+id/burnedTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_marginTop="78dp"
-            android:layout_marginEnd="11dp"
-            android:background="#FF5722"
-            android:text="Burned"
-            android:textColor="#FFFFFF"
-            android:textSize="24sp"
-            app:fontFamily="@font/quicksand_bold" />
-    </RelativeLayout>
-
-    <ScrollView
-        android:id="@+id/scrollView2"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_marginTop="20dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/vector">
+    
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -87,6 +26,7 @@
                 android:textSize="24sp"
                 app:fontFamily="@font/quicksand"
                 app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.493"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -124,88 +64,20 @@
                 app:layout_constraintStart_toEndOf="@+id/exerciseView"
                 app:layout_constraintTop_toBottomOf="@+id/okExButton" />
 
-
+            <ListView
+                android:id="@+id/foodItemList"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/exerciseView" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </ScrollView>
 
-    <LinearLayout
-        android:id="@+id/list_view_container"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:orientation="vertical"
-        app:layout_constraintBottom_toTopOf="@+id/coordinatorLayout"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/scrollView2">
 
-        <ListView
-            android:id="@+id/foodItemList"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
 
-    </LinearLayout>
 
-    <androidx.coordinatorlayout.widget.CoordinatorLayout
-        android:id="@+id/coordinatorLayout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/list_view_container">
 
-        <com.google.android.material.bottomappbar.BottomAppBar
-            android:id="@+id/bottom_app_bar"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:theme="@style/BottomAppBarTheme"
-            app:fabAlignmentMode="center"
-            app:fabCradleRoundedCornerRadius="20dp"
-            app:layout_anchor="@+id/bottom_app_bar"
-            app:layout_anchorGravity="center">
 
-            <!-- First separate part -->
-            <com.google.android.material.bottomnavigation.BottomNavigationView
-                android:id="@+id/bottom_navigation_view"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                app:menu="@menu/bottom_navigation_menu" />
 
-            <!-- Second separate part -->
-            <com.google.android.material.appbar.MaterialToolbar
-                android:id="@+id/toolbar"
-                android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
-                app:navigationIcon="@drawable/ic_menu"
-                app:title="Title" />
-
-            <!-- Third separate part -->
-            <com.google.android.material.chip.ChipGroup
-                android:id="@+id/chip_group"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="16dp"
-                app:singleSelection="true">
-
-                <com.google.android.material.chip.Chip
-                    android:id="@+id/chip1"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Chip 1" />
-
-                <com.google.android.material.chip.Chip
-                    android:id="@+id/chip2"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Chip 2" />
-
-                <com.google.android.material.chip.Chip
-                    android:id="@+id/chip3"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Chip 3" />
-            </com.google.android.material.chip.ChipGroup>
-
-        </com.google.android.material.bottomappbar.BottomAppBar>
-
-    </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

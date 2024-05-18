@@ -94,7 +94,7 @@ public class MainActivity3 extends AppCompatActivity {
                 .document(email)
                 .update(user)
                 .addOnSuccessListener(aVoid -> {
-                    Intent intent2 = new Intent(MainActivity3.this, MainActivity4.class);
+                    Intent intent2 = new Intent(MainActivity3.this, MainActivity6.class);
                     startActivity(intent2);
                 })
                 .addOnFailureListener(e -> {

@@ -2,32 +2,35 @@ package com.example.demeter;
 
 import static com.example.demeter.MainActivity.PREFS_NAME;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.SharedPreferences;
-import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.graphics.PorterDuff;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+
 import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentSnapshot;
+import android.util.Log;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -39,52 +42,58 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
-public class MainActivity4 extends AppCompatActivity {
+public class MainActivity4 extends Fragment {
 
-    FirebaseFirestore db;
-    String email;
-    long currentday;
-    DocumentReference docRef;
-    Map<String, String> value;
-    private TextView eatten;
-    private TextView calories;
-    private TextView burned;
+    private FirebaseFirestore db;
+    private String email;
+    private long currentday;
+    private DocumentReference docRef;
+    private Map<String, String> value;
+
     private EditText searchbar;
     private TextView booo;
     private Button okFoodButton;
     private Button noFoodButton;
-    private TextView errorMessagePlace;
+
     private ListView foodItems;
-    int itemNumber;
     private ArrayAdapter<String> adapter;
     private double totalCalories = 0;
     private double totalBurnedCalories = 0;
     private StringBuilder itemsInfo;
 
+    private TextView eatten;
+    private TextView calories;
+    private TextView burned;
+    private TextView errorMessagePlace;
+    int itemNumber;
+
+    @Nullable
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main4);
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.activity_main4, container, false);
+
+        eatten = getActivity().findViewById(R.id.eatenTextView);
+        calories = getActivity().findViewById(R.id.caloriesTextView);
+        burned = getActivity().findViewById(R.id.burnedTextView);
+        errorMessagePlace = getActivity().findViewById(R.id.blablablaTextView);
+
         currentday = System.currentTimeMillis();
         HashMap<String, Object> foodInfoList = new HashMap<>();
 
         db = FirebaseFirestore.getInstance();
-        SharedPreferences prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
+        SharedPreferences prefs = getActivity().getSharedPreferences(PREFS_NAME, 0);
         email = prefs.getString("email", "");
         docRef = db.collection("users").document(email);
 
-        value =  new HashMap<>();
+        value = new HashMap<>();
 
-        eatten = findViewById(R.id.xxxx2);
-        calories = findViewById(R.id.xxxx);
-        burned = findViewById(R.id.xxxx1);
-        searchbar = findViewById(R.id.searchBar);
-        booo = findViewById(R.id.booo);
-        okFoodButton = findViewById(R.id.okButton);
-        noFoodButton = findViewById(R.id.noButton);
-        errorMessagePlace = findViewById(R.id.blablabla);
-        foodItems = findViewById(R.id.foodItemList);
-        adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1);
+        searchbar = view.findViewById(R.id.searchBar);
+        booo = view.findViewById(R.id.booo);
+        okFoodButton = view.findViewById(R.id.okButton);
+        noFoodButton = view.findViewById(R.id.noButton);
+
+        foodItems = view.findViewById(R.id.foodItemList);
+        adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_1);
         foodItems.setAdapter(adapter);
 
         fetchUserData();
@@ -116,7 +125,7 @@ public class MainActivity4 extends AppCompatActivity {
                         adapter.add(itemsInfo.toString());
                         saveUserData("caloriesEaten", totalBurnedCalories);
                         foodInfoList.put(Integer.toString(itemNumber), itemsInfo);
-                        value.put(Long.toString(currentday), foodInfoList.toString() );
+                        value.put(Long.toString(currentday), foodInfoList.toString());
                         itemNumber++;
                         db.collection("users").document("dailyInfo").set(value);
                     }
@@ -124,7 +133,7 @@ public class MainActivity4 extends AppCompatActivity {
                     double totalCaloriesConsumed = Double.parseDouble(calories.getText().toString()) + totalBurnedCalories;
                     double totalCaloriesBurned = Double.parseDouble(burned.getText().toString());
                     if (totalCaloriesConsumed > totalCaloriesBurned) {
-                        runOnUiThread(new Runnable() {
+                        getActivity().runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
                                 calories.getBackground().setColorFilter(
@@ -133,7 +142,7 @@ public class MainActivity4 extends AppCompatActivity {
                             }
                         });
                     } else {
-                        runOnUiThread(new Runnable() {
+                        getActivity().runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
                                 calories.getBackground().setColorFilter(
@@ -155,6 +164,8 @@ public class MainActivity4 extends AppCompatActivity {
                 searchbar.setText("");
             }
         });
+
+        return view;
     }
 
     private void fetchUserData() {
@@ -167,7 +178,7 @@ public class MainActivity4 extends AppCompatActivity {
                         handleUserData(document);
                     }
                 } else {
-                    Log.d("MainActivity4", "get failed with ", task.getException());
+                    Log.d("Fragment4", "get failed with ", task.getException());
                 }
             }
         });
@@ -217,7 +228,7 @@ public class MainActivity4 extends AppCompatActivity {
             public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
                 try {
                     if (!response.isSuccessful()) {
-                        Log.d("MainActivity4", "Request failed with code: " + response.code());
+                        Log.d("Fragment4", "Request failed with code: " + response.code());
                         throw new IOException("Unexpected code " + response);
                     }
 
@@ -232,7 +243,7 @@ public class MainActivity4 extends AppCompatActivity {
                         totalCalories += caloriesValue;
                     }
 
-                    runOnUiThread(new Runnable() {
+                    getActivity().runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
                             eatten.setText(String.valueOf(totalBurnedCalories));
@@ -252,13 +263,5 @@ public class MainActivity4 extends AppCompatActivity {
 
     private void saveUserData(String nameOBJ, Object value) {
         docRef.update(nameOBJ, value);
-    }
-
-
-    @Override
-    public void onBackPressed() {
-        if(false){
-            super.onBackPressed();
-        }
     }
 }

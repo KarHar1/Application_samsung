@@ -90,7 +90,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
         } else {
-            Intent intent = new Intent(MainActivity.this, MainActivity4.class);
+            Intent intent = new Intent(MainActivity.this, MainActivity6.class);
             startActivity(intent);
             finish();
         }

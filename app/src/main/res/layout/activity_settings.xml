@@ -3,8 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="#F2FAE9"
-    >
+    android:background="#F2FAE9">
 
     <!-- User Information -->
 
@@ -19,7 +18,6 @@
         android:enabled="false"
         android:hint="Goal_weight"
         android:textSize="24dp"
-
         app:fontFamily="@font/quicksand" />
 
     <EditText
@@ -32,11 +30,7 @@
         android:background="@drawable/edittext_1"
         android:textSize="24dp"
         app:fontFamily="@font/quicksand"
-        android:enabled="false"
-
-
-
-        />
+        android:enabled="false" />
 
     <EditText
         android:id="@+id/text_weight"
@@ -48,11 +42,7 @@
         android:background="@drawable/edittext_1"
         android:textSize="24dp"
         app:fontFamily="@font/quicksand"
-        android:enabled="false"
-
-
-
-        />
+        android:enabled="false" />
 
     <EditText
         android:id="@+id/text_height"
@@ -64,11 +54,7 @@
         android:background="@drawable/edittext_1"
         android:textSize="24dp"
         app:fontFamily="@font/quicksand"
-        android:enabled="false"
-
-
-
-        />
+        android:enabled="false" />
 
     <!-- Radio Group for Goal -->
     <RadioGroup
@@ -82,8 +68,7 @@
         android:orientation="vertical"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:enabled="false"
-        >
+        android:enabled="false">
 
         <RadioButton
             android:id="@+id/radio_gain_weight"
@@ -92,8 +77,7 @@
             android:textSize="24dp"
             android:layout_height="wrap_content"
             android:background="@drawable/edittext_1"
-            android:hint="Gain Weight"
-            />
+            android:hint="Gain Weight" />
 
         <RadioButton
             android:id="@+id/radio_lose_weight"
@@ -111,10 +95,8 @@
             android:layout_height="wrap_content"
             android:textSize="24dp"
             android:background="@drawable/edittext_1"
-            android:hint="Maintain Weight"
-            />
+            android:hint="Maintain Weight" />
     </RadioGroup>
-
 
     <EditText
         android:id="@+id/text_name"
@@ -127,7 +109,6 @@
         android:enabled="false"
         android:hint="Name: John Doe"
         android:textSize="24dp"
-
         app:fontFamily="@font/quicksand" />
 
     <Button
@@ -150,6 +131,5 @@
         android:layout_marginTop="0dp"
         android:layout_marginEnd="11dp"
         android:text="Edit" />
-
 
 </RelativeLayout>
