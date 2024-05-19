@@ -313,7 +313,7 @@ public class MainActivity4 extends Fragment {
     }
 
     private void saveUserData(String nameOBJ, Object value) {
-        docRef.update(nameOBJ, value);
+        db.collection("users").document(email).collection(dateOFToday).document("Food").update(nameOBJ, value);
     }
     private void exerInfoSave(Object value) {
 

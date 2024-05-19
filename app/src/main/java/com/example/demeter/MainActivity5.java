@@ -88,7 +88,6 @@ public class MainActivity5 extends Fragment {
         itemsInfoExer = new StringBuilder();
         exersizeSearch = view.findViewById(R.id.searchBarExercises);
 
-        okExersizeButton = view.findViewById(R.id.okExButton);
         noEexersizeButton = view.findViewById(R.id.noExButton);
 
         exersizeSearch.addTextChangedListener(new TextWatcher() {
@@ -141,8 +140,14 @@ public class MainActivity5 extends Fragment {
             }
         });
 
+        noEexersizeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {exersizeSearch.setText("");            }
+        });
+
         return view;
     }
+
 
     private double extractCaloriesFromString(String itemInfo) {
         String[] parts = itemInfo.split("\n");
@@ -242,10 +247,12 @@ public class MainActivity5 extends Fragment {
 
     private void saveUserData(String nameOBJ, Object value) {
         // Save user data to Firestore
-        docRef.update(nameOBJ, value);
+        db.collection("users").document(email).collection(dateOFToday).document("Exer").update(nameOBJ, value);
     }
 
     private void exerInfoSave(Object value) {
         db.collection("users").document(email).collection(dateOFToday).document("Exer").set(value);
     }
+
+
 }

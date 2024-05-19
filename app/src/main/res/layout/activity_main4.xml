@@ -4,6 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
+    android:background="@color/buttonColor"
     android:layout_height="match_parent"
     tools:context=".MainActivity4">
 
@@ -25,44 +26,51 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
+                android:hint="."
                 android:id="@+id/booo"
-                android:layout_width="280dp"
+                android:layout_width="336dp"
                 android:layout_height="110dp"
                 android:layout_marginStart="40dp"
                 android:layout_marginTop="4dp"
                 android:background="@drawable/edittext_1"
-                android:hint="."
-                android:inputType="numberSigned"
                 android:textSize="24dp"
                 app:fontFamily="@font/quicksand"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/searchBar" />
 
-            <Button
-                android:id="@+id/okButton"
-                android:layout_width="60dp"
-                android:layout_height="55dp"
-                android:layout_marginTop="4dp"
-                android:background="@color/green"
-                android:text="add"
-                app:layout_constraintStart_toEndOf="@+id/booo"
-                app:layout_constraintTop_toBottomOf="@+id/searchBar" />
+    <Button
+        android:id="@+id/okButton"
+        android:layout_width="336dp"
+        android:layout_height="55dp"
+        android:layout_marginTop="3.5dp"
+        android:background="@drawable/okbttn"
+        android:text="add"
+        app:layout_constraintBottom_toTopOf="@+id/noButton"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/booo" />
 
-            <Button
-                android:id="@+id/noButton"
-                android:layout_width="60dp"
-                android:layout_height="55dp"
-                android:background="@color/red"
-                android:text="remove"
-                app:layout_constraintStart_toEndOf="@+id/booo"
-                app:layout_constraintTop_toBottomOf="@+id/okButton" />
+    <Button
+        android:id="@+id/noButton"
+        android:layout_width="336dp"
+        android:layout_height="55dp"
+        android:background="@drawable/buttondr"
+        android:text="remove"
+        app:layout_constraintBottom_toTopOf="@+id/foodItemList"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.493"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/okButton"
+        android:layout_marginTop="3.5dp"
+        app:layout_constraintVertical_bias="0.0" />
 
-            <ListView
+    <ListView
                 android:id="@+id/foodItemList"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:layout_constraintTop_toBottomOf="@+id/booo" />
-
+                android:background="@drawable/edittext_1"
+                app:layout_constraintTop_toBottomOf="@+id/noButton"
+        android:layout_marginTop="5dp"/>
 
 
 

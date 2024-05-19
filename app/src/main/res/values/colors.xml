@@ -3,7 +3,7 @@
     <color name="slateblue"> #B30F5132</color>
     <color name="black">#FF000000</color>
     <color name="white"> #FFFFFFFF</color>
-    <color name="green">#7CFC00</color>
-    <color name="red">#FF0000</color>
-    <color name="buttonColor">#F8FCF3</color>
+    <color name="green">#7ca982</color>
+    <color name="red">#D0523C</color>
+    <color name="buttonColor">#f1f7ed</color>
 </resources>

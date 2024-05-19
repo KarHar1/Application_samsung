@@ -1,8 +1,10 @@
 <!-- res/drawable/your_vector_selector.xml -->
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
+
     <item>
+
         <vector
-            xmlns:android="http://schemas.android.com/apk/res/android"
+
             xmlns:aapt="http://schemas.android.com/aapt"
             android:width="120dp"
             android:height="40dp"
