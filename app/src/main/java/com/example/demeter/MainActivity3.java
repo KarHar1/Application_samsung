@@ -61,9 +61,8 @@ public class MainActivity3 extends AppCompatActivity {
         });
 
         long millisecondsInTwoMonths = 60L * 24 * 60 * 60 * 1000;
-        long millisecondsInOneWeek = 7L * 24 * 60 * 60 * 1000;
-        timePeriod.setMaxDate(System.currentTimeMillis() + millisecondsInTwoMonths);
-        timePeriod.setMinDate(System.currentTimeMillis() + millisecondsInOneWeek);
+
+        timePeriod.setMinDate(System.currentTimeMillis() + millisecondsInTwoMonths);
 
         next.setOnClickListener(new View.OnClickListener() {
             @Override

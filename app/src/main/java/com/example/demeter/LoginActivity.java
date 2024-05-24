@@ -1,6 +1,7 @@
 package com.example.demeter;
 
 import static com.example.demeter.MainActivity.PREFS_NAME;
+import static com.example.demeter.SplashActivity.checkIfThereIsDirectory;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -20,6 +21,11 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.Map;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -27,6 +33,8 @@ public class LoginActivity extends AppCompatActivity {
     private EditText loginEmail, loginPassword;
     private TextView signupRedirectText;
     private Button loginButton;
+
+    String dateOFToday;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +49,15 @@ public class LoginActivity extends AppCompatActivity {
         loginPassword = findViewById(R.id.login_password);
         loginButton = findViewById(R.id.login_button);
         signupRedirectText = findViewById(R.id.signUpRedirectText);
+
+        LocalDate currentDate = LocalDate.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
+        dateOFToday = currentDate.format(formatter);
+        String email = prefs.getString("email" , "");
+
+
+        String date = prefs.getString("dayoftoday" , dateOFToday);
+
 
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -59,6 +76,10 @@ public class LoginActivity extends AppCompatActivity {
                                             Toast.makeText(LoginActivity.this, "Login Successful", Toast.LENGTH_SHORT).show();
                                             ed.putString("email", user.getEmail());
                                             ed.apply();
+                                            checkIfThereIsDirectory(user.getEmail() , date , "CaloriesEatten");
+                                            checkIfThereIsDirectory(user.getEmail() , date , "Food");
+                                            checkIfThereIsDirectory(user.getEmail() , date , "Exer");
+                                            checkIfThereIsDirectory(user.getEmail() , date , "CaloriesBurned");
                                             startActivity(new Intent(LoginActivity.this, MainActivity.class));
                                             finish();
                                         } else {

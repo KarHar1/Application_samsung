@@ -4,7 +4,6 @@
     <solid android:color="#243e36"></solid>
     <path
         android:strokeWidth="3.2"
-        android:strokeColor="green"
         />
 
 </shape>

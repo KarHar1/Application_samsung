@@ -45,20 +45,24 @@ import okhttp3.Response;
 
 public class MainActivity5 extends Fragment {
 
-    private TextView eatten, burned;
+    private TextView eatten, burned , total;
     private Button okExersizeButton, noEexersizeButton;
     private StringBuilder itemsInfoExer;
+    SharedPreferences.Editor ed;
+    SharedPreferences pref;
     private EditText exersizeSearch;
     private ArrayAdapter<String> adapterExer, adptr;
     private double totalCalories1 = 0;
     private int numberOfItmes;
     private HashMap<String, String> mapOfExer;
 
+    public static Boolean hasRun = false , hasRun1 = false;
+
     private FirebaseFirestore db;
     private String email;
     private DocumentReference docRef;
 
-    private String dateOFToday;
+    public String dateOFToday;
     private ListView burnedView;
 
     @Nullable
@@ -69,16 +73,16 @@ public class MainActivity5 extends Fragment {
         mapOfExer = new HashMap<>();
         eatten = getActivity().findViewById(R.id.eatenTextView);
         burned = getActivity().findViewById(R.id.burnedTextView);
+        total =  getActivity().findViewById(R.id.caloriesTextView);
         burnedView = view.findViewById(R.id.exerciseView);
-        numberOfItmes = 0;
+
 
         LocalDate currentDate = LocalDate.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
         dateOFToday = currentDate.format(formatter);
 
-        SharedPreferences pref = getActivity().getSharedPreferences(PREFS_NAME, 0);
+         pref = getActivity().getSharedPreferences(PREFS_NAME, 0);
         email = pref.getString("email", "");
-        SharedPreferences.Editor ed = pref.edit();
 
         db = FirebaseFirestore.getInstance();
         docRef = db.collection("users").document(email).collection(dateOFToday).document("Exer");
@@ -115,10 +119,12 @@ public class MainActivity5 extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 {
+                    String selectedItem = null;
                     try {
-                        String selectedItem = adptr.getItem(position);
+                        selectedItem = adptr.getItem(position);
                         if (selectedItem != null) {
                             numberOfItmes++;
+                            saveUserData("number", numberOfItmes);
                             itemsInfoExer.append(selectedItem);
                             adapterExer.add(selectedItem);
 
@@ -132,9 +138,29 @@ public class MainActivity5 extends Fragment {
 
                             mapOfExer.put(String.valueOf(numberOfItmes), selectedItem);
                             exerInfoSave(mapOfExer);
+
+                            // From MainActivity5 or any other fragment
+                            MainActivity6.checkCaloriesComparison(getContext(), (MainActivity6) getActivity(), eatten, burned, total);
+
                         }
                     } catch (NumberFormatException e) {
                         burned.setText("0");
+                        numberOfItmes++;
+                        saveUserData("number", numberOfItmes);
+                        itemsInfoExer.append(selectedItem);
+                        adapterExer.add(selectedItem);
+
+                        // Extract calories from the selected item
+                        double selectedCalories = extractCaloriesFromString(selectedItem);
+                        totalCalories1 += selectedCalories;
+                        burned.setText(String.valueOf(totalCalories1));
+
+                        // Save to Firestore
+                        saveUserData("caloriesBurned", totalCalories1);
+
+                        mapOfExer.put(String.valueOf(numberOfItmes), selectedItem);
+                        exerInfoSave(mapOfExer);
+
                     }
                 }
             }
@@ -218,6 +244,9 @@ public class MainActivity5 extends Fragment {
         });
     }
 
+
+
+
     private void fechtlistdata() {
         db.collection("users").document(email).collection(dateOFToday)
                 .document("Exer").get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -229,13 +258,37 @@ public class MainActivity5 extends Fragment {
                                 handleUserDataList(document);
                             }
                         } else {
+
+                            Log.d("Fragment4", "get failed with ", task.getException());
+                        }
+                    }
+                });
+
+        db.collection("users").document(email).collection(dateOFToday).
+                document("CaloriesBurned").get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        if (task.isSuccessful()) {
+                            DocumentSnapshot document = task.getResult();
+                            if (document != null && document.exists()) {
+                                handleUserData(document);
+                            }
+                        } else {
                             Log.d("Fragment4", "get failed with ", task.getException());
                         }
                     }
                 });
     }
 
-    private void handleUserDataList(DocumentSnapshot document) {
+    private void handleUserData(DocumentSnapshot document) {
+        if(document.get("number")!= null) {
+            numberOfItmes = (int) document.getLong("number").intValue();
+        }else{
+            numberOfItmes = 0 ;
+        }
+    }
+
+        private void handleUserDataList(DocumentSnapshot document) {
         Map<String, Object> data = document.getData();
         if (data != null) {
             for (Map.Entry<String, Object> entry : data.entrySet()) {
@@ -245,13 +298,18 @@ public class MainActivity5 extends Fragment {
         }
     }
 
-    private void saveUserData(String nameOBJ, Object value) {
-        // Save user data to Firestore
-        db.collection("users").document(email).collection(dateOFToday).document("Exer").update(nameOBJ, value);
+    private void saveUserData(String nameOBJ, Object value1 ) {
+        HashMap<String , Object> value = new HashMap<>();
+        value.put(nameOBJ , value1);
+
+            db.collection("users").document(email).collection(dateOFToday).document("CaloriesBurned").update(value);
+
     }
 
     private void exerInfoSave(Object value) {
-        db.collection("users").document(email).collection(dateOFToday).document("Exer").set(value);
+
+            db.collection("users").document(email).collection(dateOFToday).document("Exer").update((Map<String, Object>) value);
+
     }
 
 

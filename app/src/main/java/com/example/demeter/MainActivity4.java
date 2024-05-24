@@ -1,6 +1,8 @@
 package com.example.demeter;
 
 import static com.example.demeter.MainActivity.PREFS_NAME;
+import static com.example.demeter.MainActivity5.hasRun;
+import static com.example.demeter.MainActivity5.hasRun1;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -50,8 +52,12 @@ public class MainActivity4 extends Fragment {
     private FirebaseFirestore db;
     private String email;
     private long currentday;
+
+    SharedPreferences pref;
+    SharedPreferences.Editor ed;
     private DocumentReference docRef;
     private Map<String, String> value;
+    HashMap<String, Object> somtthg;
 
     private EditText searchbar;
     private TextView booo;
@@ -60,7 +66,7 @@ public class MainActivity4 extends Fragment {
 
     private ListView foodItems;
     private ArrayAdapter<String> adapter;
-    private double totalCalories = 0;
+    private double totalCalories;
     private double totalBurnedCalories = 0;
     private StringBuilder itemsInfo;
 
@@ -79,23 +85,24 @@ public class MainActivity4 extends Fragment {
 
         LocalDate currentDate = LocalDate.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
-         dateOFToday = currentDate.format(formatter);
+        dateOFToday = currentDate.format(formatter);
 
         eatten = getActivity().findViewById(R.id.eatenTextView);
         calories = getActivity().findViewById(R.id.caloriesTextView);
         burned = getActivity().findViewById(R.id.burnedTextView);
-        errorMessagePlace = getActivity().findViewById(R.id.blablablaTextView);
 
         currentday = System.currentTimeMillis();
 
 
         db = FirebaseFirestore.getInstance();
-        SharedPreferences prefs = getActivity().getSharedPreferences(PREFS_NAME, 0);
-        email = prefs.getString("email", "");
+        pref = getActivity().getSharedPreferences(PREFS_NAME, 0);
+        email = pref.getString("email", "");
+        ed = pref.edit();
+
         docRef = db.collection("users").document(email);
 
         value = new HashMap<>();
-
+        somtthg = new HashMap<>();
         searchbar = view.findViewById(R.id.searchBar);
         booo = view.findViewById(R.id.booo);
         okFoodButton = view.findViewById(R.id.okButton);
@@ -107,13 +114,19 @@ public class MainActivity4 extends Fragment {
 
         fetchUserData();
         fetchUserData();
-
+        if (!eatten.getTouchables().isEmpty()) {
+            totalCalories = Double.parseDouble(eatten.getText().toString());
+        } else {
+            totalCalories = 0;
+        }
         searchbar.addTextChangedListener(new TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
 
             @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {}
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
 
             @Override
             public void afterTextChanged(Editable s) {
@@ -130,57 +143,40 @@ public class MainActivity4 extends Fragment {
                     double currentEatenCalories = Double.parseDouble(eatten.getText().toString());
                     double updatedEatenCalories = currentEatenCalories + totalCalories;
                     eatten.setText(String.valueOf(updatedEatenCalories));
-                    totalBurnedCalories += totalCalories;
 
-                    if (itemsInfo != null) {
+
+
                         adapter.add(itemsInfo.toString());
-                        saveUserData("caloriesEaten", totalBurnedCalories);
+                        saveUserData("caloriesEatten", updatedEatenCalories);
                         value.put(String.valueOf(itemNumber), itemsInfo.toString());
                         itemNumber++;
+                        saveUserData("numberfood", itemNumber);
 
                         exerInfoSave(value);
+                        MainActivity6.checkCaloriesComparison(getContext(), (MainActivity6) getActivity(), eatten, burned, calories);
 
-                    }
 
-                    double totalCaloriesConsumed = Double.parseDouble(calories.getText().toString()) + totalBurnedCalories;
-                    double totalCaloriesBurned = Double.parseDouble(burned.getText().toString());
-                    if (totalCaloriesConsumed > totalCaloriesBurned) {
-                        getActivity().runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                calories.getBackground().setColorFilter(
-                                        getResources().getColor(R.color.red), PorterDuff.Mode.SRC_ATOP);
-                                errorMessagePlace.setText("You have exceeded your daily calorie limit.");
-                            }
-                        });
-                    } else {
-                        getActivity().runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                calories.getBackground().setColorFilter(
-                                        getResources().getColor(R.color.white), PorterDuff.Mode.SRC_ATOP);
-                                errorMessagePlace.setText("");
-                            }
-                        });
-                    }
+
+
                 } catch (NumberFormatException e) {
-                    burned.setText("0");
+                    eatten.setText("0");
 
                     double currentEatenCalories = Double.parseDouble(eatten.getText().toString());
                     double updatedEatenCalories = currentEatenCalories + totalCalories;
                     eatten.setText(String.valueOf(updatedEatenCalories));
-                    totalBurnedCalories += totalCalories;
 
-                    if (itemsInfo != null) {
+
+
                         adapter.add(itemsInfo.toString());
-                        saveUserData("caloriesEaten", totalBurnedCalories);
+                        saveUserData("caloriesEaten", updatedEatenCalories);
 
                         value.put(String.valueOf(itemNumber), itemsInfo.toString());
                         itemNumber++;
+                        saveUserData("numberfood", itemNumber);
 
                         exerInfoSave(value);
 
-                    }
+
 
                 }
             }
@@ -197,7 +193,7 @@ public class MainActivity4 extends Fragment {
     }
 
 
-    private void fechtlistdata(){
+    private void fechtlistdata() {
 
 
         db.collection("users").document(email).collection(dateOFToday).
@@ -215,10 +211,26 @@ public class MainActivity4 extends Fragment {
                     }
                 });
 
+        db.collection("users").document(email).collection(dateOFToday).
+                document("CaloriesEatten").get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        if (task.isSuccessful()) {
+                            DocumentSnapshot document = task.getResult();
+                            if (document != null && document.exists()) {
+                                handleUserData123(document);
+                            }
+                        } else {
+                            Log.d("Fragment4", "get failed with ", task.getException());
+                        }
+                    }
+                });
+
     }
+
     private void handleUserDataList(DocumentSnapshot document) {
-        Map<String, Object> arr  = new HashMap<>( document.getData());
-        for(int i = 0 ; i<arr.size() ; i++){
+        Map<String, Object> arr = new HashMap<>(document.getData());
+        for (int i = 0; i < arr.size(); i++) {
             adapter.add((String) arr.get(String.valueOf(i)));
         }
     }
@@ -239,6 +251,14 @@ public class MainActivity4 extends Fragment {
         });
     }
 
+    private void handleUserData123(DocumentSnapshot document) {
+        if (document.get("numberfood") != null) {
+            itemNumber = (int) document.getLong("numberfood").intValue();
+        } else {
+            itemNumber = 0;
+        }
+    }
+
 
     private void handleUserData(DocumentSnapshot document) {
 
@@ -253,10 +273,9 @@ public class MainActivity4 extends Fragment {
         int days = document.getLong("days").intValue();
 
 
+        User user = new User(age, height, weight, gml, goal_weight, exer, days, gender);
+        double tr = user.calculateCalories();
 
-
-
-        double tr = document.getLong("dailyCalories").intValue();
 
         calories.setText(String.valueOf(tr));
     }
@@ -285,19 +304,20 @@ public class MainActivity4 extends Fragment {
 
                     JSONArray jsonArray = new JSONArray(response.body().string());
                     itemsInfo = new StringBuilder();
+                    double totalmotal =0;
 
                     for (int i = 0; i < jsonArray.length(); i++) {
                         JSONObject data = jsonArray.getJSONObject(i);
                         String itemName = data.getString("name");
                         double caloriesValue = data.getDouble("calories");
                         itemsInfo.append("Item: ").append(itemName).append("\nCalories: ").append(caloriesValue).append("\n\n");
-                        totalCalories += caloriesValue;
+                        totalmotal += caloriesValue;
                     }
+                    totalCalories += totalmotal;
 
                     getActivity().runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            eatten.setText(String.valueOf(totalBurnedCalories));
                             if (itemsInfo != null) {
                                 booo.setText(itemsInfo.toString());
                             } else {
@@ -312,11 +332,18 @@ public class MainActivity4 extends Fragment {
         });
     }
 
-    private void saveUserData(String nameOBJ, Object value) {
-        db.collection("users").document(email).collection(dateOFToday).document("Food").update(nameOBJ, value);
+    private void saveUserData(String nameOBJ, Object value1) {
+
+
+        somtthg.put(nameOBJ, value1);
+
+        db.collection("users").document(email).collection(dateOFToday).document("CaloriesEatten").update(somtthg);
+
     }
+
     private void exerInfoSave(Object value) {
 
-        db.collection("users").document(email).collection(dateOFToday).document("Food").set(value);
+        db.collection("users").document(email).collection(dateOFToday).document("Food").update((Map<String, Object>) value);
+
     }
 }
