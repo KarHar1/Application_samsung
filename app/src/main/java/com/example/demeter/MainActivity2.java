@@ -74,13 +74,13 @@ public class MainActivity2 extends AppCompatActivity {
                             if (document.exists()) {
                                 int userWeight = document.getLong("weight").intValue();
 
-                                if (!(gml == 2 && TextUtils.isEmpty(goal_weight.getText()))) {
+                                if ((gml == 2) || !TextUtils.isEmpty(goal_weight.getText())) {
                                     if (gml == 1 && Integer.parseInt(goal_weight.getText().toString()) > userWeight) {
                                         Toast.makeText(MainActivity2.this, "Weight should be smaller than goal weight", Toast.LENGTH_LONG).show();
                                     } else if (gml == 3 && Integer.parseInt(goal_weight.getText().toString()) < userWeight) {
                                         Toast.makeText(MainActivity2.this, "Weight should be bigger than goal weight", Toast.LENGTH_LONG).show();
                                     } else {
-                                        int goalWeight = Integer.parseInt(goal_weight.getText().toString());
+                                        int goalWeight = userWeight;
                                         saveUserData(goalWeight, gml);
                                     }
                                 } else if (TextUtils.isEmpty(goal_weight.getText())) {

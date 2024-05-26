@@ -52,7 +52,7 @@ public class MainActivity5 extends Fragment {
     SharedPreferences pref;
     private EditText exersizeSearch;
     private ArrayAdapter<String> adapterExer, adptr;
-    private double totalCalories1 = 0;
+    private double totalCalories1 ;
     private int numberOfItmes;
     private HashMap<String, String> mapOfExer;
 
@@ -140,7 +140,7 @@ public class MainActivity5 extends Fragment {
                             exerInfoSave(mapOfExer);
 
                             // From MainActivity5 or any other fragment
-                            MainActivity6.checkCaloriesComparison(getContext(), (MainActivity6) getActivity(), eatten, burned, total);
+                            //   MainActivity6.checkCaloriesComparison(getContext(), (MainActivity6) getActivity(), eatten, burned, total);
 
                         }
                     } catch (NumberFormatException e) {
@@ -191,7 +191,7 @@ public class MainActivity5 extends Fragment {
 
         Request request = new Request.Builder()
                 .url("https://api.api-ninjas.com/v1/caloriesburned?activity=" + query)
-                .header("X-Api-Key", "Z5SIEjAXzW3uB7AaD5rfUYNGG2kyMOB8fREdkDvX")
+                .header("X-Api-Key", "qT5ZYMH7aMM2PsUH6kbGQA==byXZywRQ4cEfZdhD")
                 .build();
 
         client.newCall(request).enqueue(new Callback() {
@@ -283,8 +283,10 @@ public class MainActivity5 extends Fragment {
     private void handleUserData(DocumentSnapshot document) {
         if(document.get("number")!= null) {
             numberOfItmes = (int) document.getLong("number").intValue();
+            totalCalories1 = document.getLong("caloriesBurned").intValue();
         }else{
             numberOfItmes = 0 ;
+            totalCalories1 = 0 ;
         }
     }
 

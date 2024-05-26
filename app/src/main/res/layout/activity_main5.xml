@@ -19,8 +19,8 @@
                 android:layout_gravity="center"
                 android:layout_marginTop="4dp"
                 android:background="@drawable/edittext_1"
-                android:hint="Search exercises.."
-                android:textSize="24sp"
+                android:hint="Search exercises..                                        (defoult duration 1h)"
+                android:textSize="20sp"
                 app:fontFamily="@font/quicksand"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.493"
@@ -54,14 +54,15 @@
 
     <ListView
         android:id="@+id/foodItemList"
-        android:layout_width="match_parent"
+        android:layout_width="336dp"
         android:layout_height="0dp"
         android:layout_marginTop="5dp"
         android:background="@drawable/edittext_1"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/noExButton"
-        app:layout_constraintVertical_bias="0.0"
-        tools:layout_editor_absoluteX="-25dp" />
+        app:layout_constraintVertical_bias="0.0" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

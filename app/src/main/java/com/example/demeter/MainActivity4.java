@@ -112,8 +112,7 @@ public class MainActivity4 extends Fragment {
         adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_1);
         foodItems.setAdapter(adapter);
 
-        fetchUserData();
-        fetchUserData();
+
         if (!eatten.getTouchables().isEmpty()) {
             totalCalories = Double.parseDouble(eatten.getText().toString());
         } else {
@@ -235,57 +234,26 @@ public class MainActivity4 extends Fragment {
         }
     }
 
-    private void fetchUserData() {
-        docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if (task.isSuccessful()) {
-                    DocumentSnapshot document = task.getResult();
-                    if (document != null && document.exists()) {
-                        handleUserData(document);
-                    }
-                } else {
-                    Log.d("Fragment4", "get failed with ", task.getException());
-                }
-            }
-        });
-    }
+
 
     private void handleUserData123(DocumentSnapshot document) {
         if (document.get("numberfood") != null) {
             itemNumber = (int) document.getLong("numberfood").intValue();
+
         } else {
             itemNumber = 0;
         }
     }
 
 
-    private void handleUserData(DocumentSnapshot document) {
 
-
-        int age = document.getLong("age").intValue();
-        int weight = document.getLong("weight").intValue();
-        int height = document.getLong("height").intValue();
-        String gender = document.getString("gender");
-        int goal_weight = document.getLong("goalWeight").intValue();
-        int gml = document.getLong("gml").intValue();
-        int exer = document.getLong("exer").intValue();
-        int days = document.getLong("days").intValue();
-
-
-        User user = new User(age, height, weight, gml, goal_weight, exer, days, gender);
-        double tr = user.calculateCalories();
-
-
-        calories.setText(String.valueOf(tr));
-    }
 
     private void performSearch(String query) {
         OkHttpClient client = new OkHttpClient();
 
         Request request = new Request.Builder()
                 .url("https://api.api-ninjas.com/v1/nutrition?query=" + query)
-                .header("X-Api-Key", "Z5SIEjAXzW3uB7AaD5rfUYNGG2kyMOB8fREdkDvX")
+                .header("X-Api-Key", "qT5ZYMH7aMM2PsUH6kbGQA==byXZywRQ4cEfZdhD")
                 .build();
 
         client.newCall(request).enqueue(new Callback() {

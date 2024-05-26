@@ -1,21 +1,22 @@
 package com.example.demeter;
-
 import static com.example.demeter.MainActivity.PREFS_NAME;
 import static com.example.demeter.MainActivity5.hasRun;
 import static com.example.demeter.MainActivity5.hasRun1;
-
-import static java.security.AccessController.getContext;
 
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.text.Layout;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
@@ -23,20 +24,19 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
-import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.Source;
+import com.google.firebase.firestore.FirebaseFirestoreException;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-
 public class MainActivity6 extends AppCompatActivity {
 
     private TextView eaten;
     private TextView calories;
-    private TextView burned;
+    private TextView burned  , totalView;
     private TextView errorMessagePlace;
 
     public String dateOFToday;
@@ -51,46 +51,42 @@ public class MainActivity6 extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main6);
 
-
-
-
-
         LocalDate currentDate = LocalDate.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
         dateOFToday = currentDate.format(formatter);
-
 
         SharedPreferences pref = getSharedPreferences(PREFS_NAME, 0);
         email = pref.getString("email", "");
 
         SharedPreferences.Editor ed = pref.edit();
-        ed.putString("dayoftoday" , dateOFToday);
-
-
+        ed.putString("dayoftoday", dateOFToday).apply();
 
         db = FirebaseFirestore.getInstance();
-        docRef =  db.collection("users").document(email);
-
+        docRef = db.collection("users").document(email);
 
         eaten = findViewById(R.id.eatenTextView);
         calories = findViewById(R.id.caloriesTextView);
         burned = findViewById(R.id.burnedTextView);
-
+        totalView = findViewById(R.id.totalTextView);
 
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigationView);
         fetchUserData();
-
 
         bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 Fragment selectedFragment = null;
+
                 int itemId = item.getItemId();
 
                 if (itemId == R.id.nav_food) {
                     selectedFragment = new MainActivity4();
                 } else if (itemId == R.id.nav_exercise) {
                     selectedFragment = new MainActivity5();
+                } else if (itemId == R.id.nav_settings) {
+                    selectedFragment = new Settings();
+                } else if (itemId == R.id.nav_history) {
+                    selectedFragment = new History();
                 }
 
                 if (selectedFragment != null) {
@@ -107,63 +103,55 @@ public class MainActivity6 extends AppCompatActivity {
         if (savedInstanceState == null) {
             bottomNavigationView.setSelectedItemId(R.id.nav_food);
         }
+
+
     }
 
-
-
     private void fetchUserData() {
-       docRef.get().addOnCompleteListener(new OnCompleteListener() {
+        docRef.addSnapshotListener(new EventListener<DocumentSnapshot>() {
             @Override
-            public void onComplete(@NonNull Task task) {
-                if (task.isSuccessful()) {
-                    DocumentSnapshot document = (DocumentSnapshot) task.getResult();
-                    if (document != null && document.exists()) {
-                        handleUserData(document , 0);
-                    }
-                } else {
-                    Log.d("MainActivity4", "get failed with ", task.getException());
+            public void onEvent(@Nullable DocumentSnapshot document, @Nullable FirebaseFirestoreException e) {
+                if (e != null) {
+                    Log.d("MainActivity6", "Listen failed with ", e);
+                    return;
+                }
+                if (document != null && document.exists()) {
+                    handleUserData(document, 0);
                 }
             }
         });
 
-
-       db.collection("users").document(email).collection(dateOFToday).document("CaloriesEatten")
-               .get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                   @Override
-                   public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                       if (task.isSuccessful()) {
-                           DocumentSnapshot document = (DocumentSnapshot) task.getResult();
-                           if (document != null && document.exists()) {
-                               handleUserData(document , 1);
-                           }
-                       } else {
-                           Log.d("MainActivity4", "get failed with ", task.getException());
-                       }
-                   }
-               });
-
-        db.collection("users").document(email).collection(dateOFToday).document("CaloriesBurned")
-                .get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+        db.collection("users").document(email).collection(dateOFToday).document("CaloriesEatten")
+                .addSnapshotListener(new EventListener<DocumentSnapshot>() {
                     @Override
-                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                        if (task.isSuccessful()) {
-                            DocumentSnapshot document = (DocumentSnapshot) task.getResult();
-                            if (document != null && document.exists()) {
-                                handleUserData(document , 2);
-                            }
-                        } else {
-                            Log.d("MainActivity4", "get failed with ", task.getException());
+                    public void onEvent(@Nullable DocumentSnapshot document, @Nullable FirebaseFirestoreException e) {
+                        if (e != null) {
+                            Log.d("MainActivity6", "Listen failed with ", e);
+                            return;
+                        }
+                        if (document != null && document.exists()) {
+                            handleUserData(document, 1);
                         }
                     }
                 });
 
-
-
+        db.collection("users").document(email).collection(dateOFToday).document("CaloriesBurned")
+                .addSnapshotListener(new EventListener<DocumentSnapshot>() {
+                    @Override
+                    public void onEvent(@Nullable DocumentSnapshot document, @Nullable FirebaseFirestoreException e) {
+                        if (e != null) {
+                            Log.d("MainActivity6", "Listen failed with ", e);
+                            return;
+                        }
+                        if (document != null && document.exists()) {
+                            handleUserData(document, 2);
+                        }
+                    }
+                });
     }
 
-
-    private void handleUserData(DocumentSnapshot document , Integer bool) {
-        if(bool == 0) {
+    private void handleUserData(DocumentSnapshot document, Integer bool) {
+        if (bool == 0) {
             int age = document.getLong("age").intValue();
             int weight = document.getLong("weight").intValue();
             int height = document.getLong("height").intValue();
@@ -176,26 +164,26 @@ public class MainActivity6 extends AppCompatActivity {
             double tr = user.calculateCalories();
             saveUserData("dailyCalories", Float.parseFloat(String.valueOf(tr)));
             calories.setText(String.valueOf(tr));
-        }else if(bool == 1) {
-
-            Object eatenValue = document.get("caloriesEaten");
-
+        } else if (bool == 1) {
+            Object eatenValue = 0;
+            if (document.getLong("caloriesEatten") != null) {
+                eatenValue = document.getLong("caloriesEatten").intValue();
+            }
             eaten.setText(String.valueOf(eatenValue));
-
-        }else if(bool == 2){
-            Object burnedValue = document.get("caloriesBurned");
+        } else if (bool == 2) {
+            Object burnedValue = 0;
+            if (document.getLong("caloriesBurned") != null) {
+                burnedValue = document.getLong("caloriesBurned").intValue();
+            }
             burned.setText(String.valueOf(burnedValue));
         }
 
+updateTotalView();
+    }
 
-
-
-
-            }
-
-            private void saveUserData (String nameOBJ, Object value){
-                docRef.update(nameOBJ, value);
-            }
+    private void saveUserData(String nameOBJ, Object value) {
+        docRef.update(nameOBJ, value);
+    }
 
     public static void checkCaloriesComparison(Context context, MainActivity6 activity, TextView eatenView, TextView burnedView, TextView totalView) {
         // Get the text from the TextViews and parse them to double
@@ -224,13 +212,22 @@ public class MainActivity6 extends AppCompatActivity {
         }
     }
 
+    public void hideView() {
+        RelativeLayout layout = findViewById(R.id.vector);
+        if (layout != null) {
+            layout.setVisibility(View.GONE);
+        }
+    }
 
 
+    private void updateTotalView() {
+        try {
+            int eatenCalories = Integer.parseInt(eaten.getText().toString());
+            int burnedCalories = Integer.parseInt(burned.getText().toString());
+            totalView.setText(String.valueOf(eatenCalories - burnedCalories));
+        } catch (NumberFormatException e) {
+            Log.d("MainActivity6", "NumberFormatException: " + e.getMessage());
+            totalView.setText("0");
+        }
+    }
 }
-
-
-
-
-
-
-

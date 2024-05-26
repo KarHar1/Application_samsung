@@ -3,13 +3,17 @@
     <item
         android:id="@+id/nav_exercise"
         android:title="Exersize"
-        android:icon="@drawable/edittext_1"/>
+        android:icon="@drawable/baseline_accessibility_24"/>
     <item
         android:id="@+id/nav_food"
-        android:title="Home"
-        android:icon="@drawable/edittext_1"/>
+        android:title="Food"
+        android:icon="@drawable/baseline_fastfood_24"/>
     <item
-        android:id="@+id/navigation_notifications"
+        android:id="@+id/nav_history"
         android:title="History"
-        android:icon="@drawable/edittext_1"/>
+        android:icon="@drawable/baseline_history_24"/>
+    <item
+        android:id="@+id/nav_settings"
+        android:title="Settings"
+        android:icon="@drawable/baseline_settings_24"/>
 </menu>
