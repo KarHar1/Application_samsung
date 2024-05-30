@@ -32,7 +32,7 @@ public class MainActivity extends AppCompatActivity {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         DocumentReference docRef = db.collection("users").document(email);
 
-        if (prefs.getBoolean(FIRST_TIME_KEY, true)) {
+        if (true) {
             setContentView(R.layout.activity_main);
 
             EditText nameEditText = findViewById(R.id.edittext_1);
